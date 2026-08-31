@@ -27,7 +27,10 @@ HOST_OBJS := $(SRC_DIR)/ssh/net_host.o \
              $(SRC_DIR)/crypto/sha256.o \
              $(SRC_DIR)/crypto/sha1.o
 
-INCDIR := $(SRC_DIR)
+INCDIR := $(SRC_DIR) $(SRC_DIR)/crypto $(SRC_DIR)/ssh
+
+# host build flags (PSP build.mak adds its own from INCDIR)
+HOST_CFLAGS := -Isrc -Isrc/crypto -Isrc/ssh
 
 ifeq ($(shell psp-config --psp-prefix 2>/dev/null),)
     $(info Note: PSP SDK not found — building host test targets only)
@@ -41,14 +44,14 @@ test: test/test_crypto
 	./test/test_crypto
 
 test/test_crypto: test/test_crypto.c $(HOST_OBJS)
-	cc -Isrc -o $@ test/test_crypto.c $(HOST_OBJS)
+	cc $(HOST_CFLAGS) -o $@ test/test_crypto.c $(HOST_OBJS)
 
 # ── Integration test against real sshd (host) ──
 test-integration: test/test_integration
 	./test/test_integration
 
 test/test_integration: test/test_integration.c $(HOST_OBJS)
-	cc -Isrc -o $@ test/test_integration.c $(HOST_OBJS)
+	cc $(HOST_CFLAGS) -o $@ test/test_integration.c $(HOST_OBJS)
 
 # ── PSP EBOOT (requires SDK; DOCKER target for CI) ──
 DOCKER_BUILD := docker run --rm -v $(CURDIR):/src -w /src pspdev/pspdev \
