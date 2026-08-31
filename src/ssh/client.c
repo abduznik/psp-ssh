@@ -51,7 +51,15 @@ static int expect_msg(sshe_tx *t, int want, sshe_buf *out)
         r = sshe_tx_recv_packet(t, out);
         if (r < 0) { DBG("expect %d: recv failed\n", want); return -1; }
         if (r == want) return 0;
-        DBG("expect %d: got %d\n", want, r);
+        DBG("expect %d: got %d (len %u)\n", want, r, (unsigned)out->len);
+        if (out->len > 0) {
+            size_t i;
+            for (i = 0; i < (out->len > 32 ? 32u : out->len); i++) {
+                DBG("%02x ", out->data[i]);
+                if ((i % 16) == 15) DBG("\n");
+            }
+            DBG("\n");
+        }
         if (r == MSG_USERAUTH_BANNER || r == MSG_IGNORE ||
             r == MSG_DEBUG || r == MSG_UNIMPLEMENTED) {
             continue; /* skip noise */

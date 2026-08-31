@@ -9,6 +9,8 @@
 #include <pspnet_apctl.h>
 #include <pspnet_resolver.h>
 #include <pspwlan.h>
+#include <arpa/inet.h>
+#include <netinet/in.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -21,7 +23,6 @@ typedef struct {
 int sshe_net_connect(sshe_sock *s, const char *host, unsigned short port)
 {
     psp_impl *h = (psp_impl *)calloc(1, sizeof(psp_impl));
-    struct in_addr addr;
 
     if (!h) return -1;
     h->fd = -1;
@@ -29,19 +30,23 @@ int sshe_net_connect(sshe_sock *s, const char *host, unsigned short port)
     h->fd = sceNetInetSocket(AF_INET, SOCK_STREAM, 0);
     if (h->fd < 0) { free(h); return -1; }
 
-    addr.s_addr = sceNetInetInetAddr(host);
-    if (addr.s_addr == 0xFFFFFFFFu) {
-        /* host not dotted-quad — resolve via sceNetResolver (async). 
-         * For v0.1 keep it simple: dotted-quad only; DNS lands in M3. */
-        sceNetInetClose(h->fd);
-        free(h);
-        return -1;
-    }
-
-    if (sceNetInetConnect(h->fd, &addr, sizeof(addr), port) < 0) {
-        sceNetInetClose(h->fd);
-        free(h);
-        return -1;
+    {
+        struct sockaddr_in sa;
+        memset(&sa, 0, sizeof(sa));
+        sa.sin_family = AF_INET;
+        sa.sin_port = htons(port);
+        sa.sin_addr.s_addr = inet_addr(host);   /* sceNetInetInetAddr */
+        if (sa.sin_addr.s_addr == 0xFFFFFFFFu) {
+            /* not dotted-quad — DNS lands in M3, keep v0.1 simple */
+            sceNetInetClose(h->fd);
+            free(h);
+            return -1;
+        }
+        if (sceNetInetConnect(h->fd, (struct sockaddr *)&sa, sizeof(sa)) < 0) {
+            sceNetInetClose(h->fd);
+            free(h);
+            return -1;
+        }
     }
     s->impl = h;
     return 0;
