@@ -1,18 +1,19 @@
 /*
- * main.c — PSP SSH client entry (M1: config file -> exec -> print)
+ * main.c — PSP SSH client UI (M2: on-screen config + shell)
  *
- * config at ms0:/PSP/SYSTEM/pspssh.cfg, one value per line:
- *   host 192.168.1.10
- *   port 22
- *   user alice
- *   pass secret
- *   cmd  uname -a        (optional; default: no command, exits)
- *
- * M1: wired for testing; the interactive OSK terminal lands in M2/M3.
+ * - Config menu on the debug screen: D-pad to pick a field, X to
+ *   edit it via the system OSK, START (or triangle) to connect.
+ * - Optional ms0:/PSP/SYSTEM/pspssh.cfg pre-fills the fields.
+ * - With a command set: exec once, print output, return to menu.
+ * - Without a command: interactive shell over a pty — X opens the
+ *   OSK to type a line, HOME closes the session / exits.
+ * - HOME always exits cleanly (no power-cycling to leave).
  */
 
 #include <pspkernel.h>
 #include <pspdebug.h>
+#include <pspctrl.h>
+#include <pspdisplay.h>
 #include <pspnet.h>
 #include <pspnet_inet.h>
 #include <pspnet_apctl.h>
@@ -25,8 +26,9 @@
 #include "../ssh/net.h"
 #include "../ssh/transport.h"
 #include "../ssh/client.h"
+#include "osk.h"
 
-PSP_MODULE_INFO("PSPSSH", 0x1000, 0, 1);
+PSP_MODULE_INFO("PSPSSH", 0x1000, 0, 2);
 PSP_MAIN_THREAD_ATTR(PSP_THREAD_ATTR_USER | PSP_THREAD_ATTR_VFPU);
 PSP_HEAP_SIZE_KB(8 * 1024);
 
@@ -38,6 +40,51 @@ static char cfg_user[32] = "";
 static char cfg_pass[64] = "";
 static char cfg_cmd[256] = "";
 
+/* ── exit via HOME: callback thread + ctrl poll ── */
+
+static int exit_callback(int arg1, int arg2, void *common)
+{
+    (void)arg1; (void)arg2; (void)common;
+    sceKernelExitGame();
+    return 0;
+}
+
+static int vsh_callback_thread(SceSize args, void *argp)
+{
+    int cbid;
+    (void)args; (void)argp;
+    cbid = sceKernelCreateCallback("Exit Callback", exit_callback, NULL);
+    sceKernelRegisterExitCallback(cbid);
+    sceKernelSleepThreadCB();
+    return 0;
+}
+
+static void register_exit_callback(void)
+{
+    int thid = sceKernelCreateThread("exit_cb", vsh_callback_thread,
+                                     0x11, 0xFA0, 0, NULL);
+    if (thid >= 0) sceKernelStartThread(thid, 0, NULL);
+}
+
+/* true when HOME held — polled in tight loops */
+static int home_pressed(void)
+{
+    SceCtrlData pad;
+    sceCtrlPeekBufferPositive(&pad, 1);
+    return (pad.Buttons & PSP_CTRL_HOME) != 0;
+}
+
+/* stall until HOME; used on every exit path */
+static void hold(const char *msg)
+{
+    pspDebugScreenPrintf("%s\n", msg);
+    pspDebugScreenPrintf("[HOME] exit\n");
+    sceCtrlSetSamplingMode(PSP_CTRL_MODE_DIGITAL);
+    while (!home_pressed()) sceKernelDelayThread(100000);
+    sceKernelExitGame();
+}
+
+/* ── config: load optional pre-fill ── */
 static void load_config(void)
 {
     FILE *f = fopen(CONFIG, "r");
@@ -56,25 +103,21 @@ static void load_config(void)
     fclose(f);
 }
 
-/* Load the network modules the PSP ships with. Every homebrew that
-   touches the net stack must do this before sceNetInit — calling the
-   inits cold just returns errors (and then exiting with a partial
-   stack crashes the console). Mirrors pspSdkLoadInetModules()
-   (pspsdk src/sdk/inethelper.c). */
+/* ── network init: load modules first (the whole point) ── */
 static int load_net_modules(void)
 {
     const struct { unsigned int type; const char *name; } mods[] = {
-        { PSP_NET_MODULE_COMMON,  "COMMON"  },
-        { PSP_NET_MODULE_INET,    "INET"    },
+        { PSP_NET_MODULE_COMMON,   "COMMON"   },
+        { PSP_NET_MODULE_INET,     "INET"     },
         { PSP_NET_MODULE_PARSEURI, "PARSEURI" },
-        { PSP_NET_MODULE_PARSEHTTP, "PARSEHTTP" },
-        { PSP_NET_MODULE_HTTP,    "HTTP"    },
-        { PSP_NET_MODULE_SSL,     "SSL"     },
+        { PSP_NET_MODULE_PARSEHTTP,"PARSEHTTP"},
+        { PSP_NET_MODULE_HTTP,     "HTTP"     },
+        { PSP_NET_MODULE_SSL,      "SSL"      },
     };
     int i;
     for (i = 0; i < (int)(sizeof(mods) / sizeof(mods[0])); i++) {
         int err = sceUtilityLoadNetModule(mods[i].type);
-        if (err < 0 && err != 0x80010003) { /* 0x80010003 = already loaded */
+        if (err < 0 && err != 0x80010003) {   /* already loaded: ok */
             pspDebugScreenPrintf("load %s: 0x%08X\n", mods[i].name, err);
             return -1;
         }
@@ -85,55 +128,177 @@ static int load_net_modules(void)
 static int init_net(void)
 {
     int err;
-
-    if (load_net_modules() != 0) {
-        pspDebugScreenPrintf("net modules failed\n");
-        return -1;
-    }
-
-    /* SDK-standard arguments (inethelper.c: sceNetInit(0x20000, 0x20,
-       0x1000, 0x20, 0x1000) * 2x workspace for our socket buffers) */
+    if (load_net_modules() != 0) return -1;
     err = sceNetInit(0x80000, 42, 0, 42, 0);
     if (err != 0) { pspDebugScreenPrintf("sceNetInit: 0x%08X\n", err); return -1; }
-
     err = sceNetInetInit();
     if (err != 0) { pspDebugScreenPrintf("sceNetInetInit: 0x%08X\n", err); return -1; }
-
     err = sceNetApctlInit(0x8000, 48);
     if (err != 0) { pspDebugScreenPrintf("sceNetApctlInit: 0x%08X\n", err); return -1; }
-
     return 0;
 }
 
-/* Stall instead of returning from main with the net stack up/down —
-   exiting mid-stack is what crashed the PSP. Hold until power off. */
-static void hold(const char *msg)
-{
-    pspDebugScreenPrintf("%s\n", msg);
-    pspDebugScreenPrintf("hold (power off to exit)\n");
-    for (;;) sceKernelDelayThread(1000000);
-}
-
+/* ── session output: render remote bytes to the debug screen,
+      stripping CR and control bytes we cannot show ── */
 static int out_print(void *ctx, const unsigned char *d, size_t n)
 {
+    size_t i;
+    char line[256];
+    size_t li = 0;
     (void)ctx;
-    /* raw bytes to stdout — M2 replaces with the PSPSH terminal */
-    fwrite(d, 1, n, stdout);
+    for (i = 0; i < n; i++) {
+        unsigned char c = d[i];
+        if (c == '\r') continue;
+        if (c == '\n') {
+            line[li] = 0;
+            pspDebugScreenPrintf("%s\n", line);
+            li = 0;
+            continue;
+        }
+        if (c < 0x20 || c >= 0x7F) continue;   /* skip ESC/osc etc. */
+        if (li < sizeof(line) - 1) line[li++] = (char)c;
+    }
+    if (li > 0) {
+        line[li] = 0;
+        pspDebugScreenPrintf("%s", line);
+    }
     return 0;
+}
+
+/* ── session input: X opens OSK, returns one line (with \n) ── */
+static char pending[256];
+static int have_pending;
+
+static int in_line(void *ctx, unsigned char *d, size_t n)
+{
+    size_t len;
+    (void)ctx;
+    if (!have_pending) {
+        SceCtrlData pad;
+        sceCtrlPeekBufferPositive(&pad, 1);
+        if (pad.Buttons & PSP_CTRL_CROSS) {
+            char raw[240];
+            memset(raw, 0, sizeof(raw));
+            if (osk_input("command", "", raw, sizeof(raw)) &&
+                raw[0]) {
+                snprintf(pending, sizeof(pending), "%s\n", raw);
+                have_pending = 1;
+            }
+        }
+    }
+    if (!have_pending) return 0;
+    len = strlen(pending);
+    if (len > n) len = n;
+    memcpy(d, pending, len);
+    /* consume only the bytes handed out */
+    if (len == strlen(pending)) have_pending = 0;
+    else memmove(pending, pending + len, strlen(pending + len) + 1);
+    return (int)len;
+}
+
+/* ── config menu ── */
+enum { F_HOST, F_PORT, F_USER, F_PASS, F_CMD, F_COUNT };
+
+static const char *field_names[F_COUNT] = {
+    "host", "port", "user", "pass", "cmd"
+};
+
+static void menu_render(int sel)
+{
+    char pb[80];
+    int i;
+    pspDebugScreenClear();
+    pspDebugScreenPrintf("PSPSSH v0.2 - SSH client\n");
+    pspDebugScreenPrintf("------------------------\n");
+    for (i = 0; i < F_COUNT; i++) {
+        const char *val;
+        if (i == F_PORT) {
+            snprintf(pb, sizeof(pb), "%u", (unsigned)cfg_port);
+            val = pb;
+        } else if (i == F_PASS) {
+            val = cfg_pass[0] ? "******" : "";
+        } else if (i == F_HOST) val = cfg_host;
+        else if (i == F_USER) val = cfg_user;
+        else val = cfg_cmd;
+        pspDebugScreenPrintf("%c %-5s %s\n",
+                             i == sel ? '>' : ' ', field_names[i], val);
+    }
+    pspDebugScreenPrintf("------------------------\n");
+    pspDebugScreenPrintf("X edit  START connect  HOME exit\n");
+    pspDebugScreenPrintf("(cmd empty = interactive shell)\n");
+}
+
+static int menu_run(void)
+{
+    int sel = 0;
+    SceCtrlData pad, old;
+    memset(&old, 0, sizeof(old));
+    sceCtrlSetSamplingMode(PSP_CTRL_MODE_DIGITAL);
+    menu_render(sel);
+    for (;;) {
+        char buf[300];
+        if (home_pressed()) return -2;               /* exit app */
+        sceCtrlPeekBufferPositive(&pad, 1);
+        if ((pad.Buttons & PSP_CTRL_UP) && !(old.Buttons & PSP_CTRL_UP)) {
+            sel = (sel + F_COUNT - 1) % F_COUNT;
+            menu_render(sel);
+        }
+        if ((pad.Buttons & PSP_CTRL_DOWN) && !(old.Buttons & PSP_CTRL_DOWN)) {
+            sel = (sel + 1) % F_COUNT;
+            menu_render(sel);
+        }
+        if ((pad.Buttons & PSP_CTRL_CROSS) && !(old.Buttons & PSP_CTRL_CROSS)) {
+            const char *cur = NULL;
+            switch (sel) {
+            case F_HOST: cur = cfg_host; break;
+            case F_PORT: snprintf(buf, sizeof(buf), "%u", (unsigned)cfg_port); cur = buf; break;
+            case F_USER: cur = cfg_user; break;
+            case F_PASS: cur = cfg_pass; break;
+            case F_CMD:  cur = cfg_cmd;  break;
+            }
+            if (osk_input(field_names[sel], cur, buf, sizeof(buf))) {
+                switch (sel) {
+                case F_HOST: snprintf(cfg_host, sizeof(cfg_host), "%s", buf); break;
+                case F_PORT: cfg_port = (unsigned short)atoi(buf); break;
+                case F_USER: snprintf(cfg_user, sizeof(cfg_user), "%s", buf); break;
+                case F_PASS: snprintf(cfg_pass, sizeof(cfg_pass), "%s", buf); break;
+                case F_CMD:  snprintf(cfg_cmd, sizeof(cfg_cmd), "%s", buf); break;
+                }
+            }
+            menu_render(sel);
+        }
+        if ((pad.Buttons & (PSP_CTRL_START | PSP_CTRL_TRIANGLE)) &&
+            !(old.Buttons & (PSP_CTRL_START | PSP_CTRL_TRIANGLE))) {
+            if (!cfg_host[0] || !cfg_user[0]) {
+                pspDebugScreenClear();
+                pspDebugScreenPrintf("host and user required\n");
+                sceKernelDelayThread(1200000);
+                menu_render(sel);
+            } else {
+                return 0;                              /* go connect */
+            }
+        }
+        old = pad;
+        sceKernelDelayThread(60000);
+    }
 }
 
 int main(void)
 {
     sshe_tx t;
-    sshe_buf out_ign = {0};
+    int rc;
 
     pspDebugScreenInit();
-    pspDebugScreenPrintf("PSPSSH v0.1\n");
+    register_exit_callback();
+    pspDebugScreenPrintf("PSPSSH v0.2\n");
 
     load_config();
-    if (!cfg_host[0]) {
-        hold("no config at ms0:/PSP/SYSTEM/pspssh.cfg");
-    }
+    rc = menu_run();
+    if (rc == -2) { sceKernelExitGame(); return 0; }
+
+    pspDebugScreenClear();
+    pspDebugScreenPrintf("connecting to %s:%u as %s ...\n",
+                         cfg_host, (unsigned)cfg_port, cfg_user);
 
     if (init_net() != 0) {
         hold("net init failed");
@@ -141,7 +306,8 @@ int main(void)
 
     memset(&t, 0, sizeof(t));
     if (sshe_net_connect(&t.sock, cfg_host, cfg_port) != 0) {
-        hold("connect failed");
+        pspDebugScreenPrintf("connect failed (err %d)\n", sshe_net_errno(&t.sock));
+        hold("");
     }
 
     if (sshe_tx_handshake(&t, "SSH-2.0-PSPSSH_0.1") != 0) {
@@ -153,15 +319,25 @@ int main(void)
                          t.server_pk[0], t.server_pk[1],
                          t.server_pk[2], t.server_pk[3]);
 
-    if (sshe_client_run(&t, cfg_user, cfg_pass,
-                        cfg_cmd[0] ? cfg_cmd : NULL,
-                        out_print, NULL, NULL, NULL) != 0) {
-        hold("session failed");
+    if (cfg_cmd[0]) {
+        /* exec once */
+        pspDebugScreenPrintf("exec: %s\n", cfg_cmd);
+        rc = sshe_client_run(&t, cfg_user, cfg_pass, cfg_cmd[0] ? cfg_cmd : NULL,
+                             out_print, NULL, NULL, NULL);
+    } else {
+        /* interactive shell */
+        pspDebugScreenPrintf("shell: X types, HOME exits\n");
+        have_pending = 0;
+        rc = sshe_client_run(&t, cfg_user, cfg_pass, NULL,
+                             out_print, NULL, in_line, NULL);
     }
 
-    (void)out_ign;
     sshe_net_close(&t.sock);
-    pspDebugScreenPrintf("\nbye.\n");
-    hold("done");
+    if (rc == 0) {
+        pspDebugScreenPrintf("\nsession closed\n");
+        sceKernelDelayThread(1500000);
+    }
+    hold(rc == 0 ? "back to menu: restart app" : "session failed");
+    sceKernelExitGame();
     return 0;
 }

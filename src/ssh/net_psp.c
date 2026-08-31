@@ -58,6 +58,29 @@ int sshe_net_send(sshe_sock *s, const void *buf, size_t len)
     return sceNetInetSend(h->fd, buf, (unsigned int)len, 0);
 }
 
+int sshe_net_errno(sshe_sock *s)
+{
+    (void)s;
+    return sceNetInetGetErrno();
+}
+
+int sshe_net_poll(sshe_sock *s, int ms)
+{
+    psp_impl *h = (psp_impl *)s->impl;
+    fd_set rfds;
+    struct SceNetInetTimeval tv;
+    int r;
+
+    FD_ZERO(&rfds);
+    FD_SET((unsigned int)h->fd, &rfds);
+    tv.tv_sec = (uint32_t)(ms / 1000);
+    tv.tv_usec = (uint32_t)((ms % 1000) * 1000);
+    r = sceNetInetSelect(h->fd + 1, &rfds, NULL, NULL, &tv);
+    if (r < 0) return -1;
+    if (r == 0) return 0;
+    return FD_ISSET(h->fd, &rfds) ? 1 : 0;
+}
+
 int sshe_net_recv(sshe_sock *s, void *buf, size_t len)
 {
     psp_impl *h = (psp_impl *)s->impl;

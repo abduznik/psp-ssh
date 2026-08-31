@@ -11,6 +11,7 @@ PSP_EBOOT_ICON  :=
 
 # PSP build objects (build.mak expects OBJS)
 OBJS := $(SRC_DIR)/app/main.o \
+        $(SRC_DIR)/app/osk.o \
         $(SRC_DIR)/ssh/net_psp.o \
         $(SRC_DIR)/ssh/transport.o \
         $(SRC_DIR)/ssh/client.o \

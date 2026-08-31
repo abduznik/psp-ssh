@@ -201,75 +201,81 @@ int sshe_client_run(sshe_tx *t,
     if (sshe_tx_send_payload(t, &msg) != 0) return -1;
     (void)want_reply;
 
-    /* data pump until EOF/close */
+    /* data pump until EOF/close — poll-based so interactive input
+       (in_fn) is serviced even while the server is idle */
     for (;;) {
-        int r;
-        out.len = 0;
-        out.pos = 0;
-        r = sshe_tx_recv_packet(t, &out);
-        if (r < 0) return -1;
-        switch (r) {
-        case MSG_CHANNEL_DATA: {
-            uint8_t typ;
-            uint32_t rc;
-            const unsigned char *data;
-            size_t dlen;
-            if (sshe_buf_get_u8(&out, &typ) != 0 ||
-                sshe_buf_get_u32(&out, &rc) != 0 ||
-                sshe_buf_get_str(&out, &data, &dlen) != 0)
-                return -1;
-            if (out_fn) out_fn(out_ctx, data, dlen);
-            break;
-        }
-        case MSG_CHANNEL_EOF:
-            /* send our EOF + close, done */
-            msg.len = 0; msg.pos = 0;
-            sshe_buf_u8(&msg, MSG_CHANNEL_EOF);
-            sshe_buf_u32(&msg, server_chan);
-            sshe_tx_send_payload(t, &msg);
-            msg.len = 0; msg.pos = 0;
-            sshe_buf_u8(&msg, MSG_CHANNEL_CLOSE);
-            sshe_buf_u32(&msg, server_chan);
-            sshe_tx_send_payload(t, &msg);
-            return 0;
-        case MSG_CHANNEL_CLOSE:
-            return 0;
-        case MSG_CHANNEL_WINDOW_ADJUST:
-            break;
-        case MSG_CHANNEL_SUCCESS:
-        case MSG_CHANNEL_FAILURE:
-            /* replies to our channel requests (exec/shell want_reply)
-               — nothing further to do */
-            break;
-        case MSG_CHANNEL_REQUEST: {
-            /* ignore server requests (keepalive etc.) */
-            break;
-        }
-        case MSG_GLOBAL_REQUEST: {
-            /* server global request — decline politely */
-            uint8_t typ;
-            const unsigned char *nm;
-            size_t nmlen;
-            uint8_t want_reply = 0;
-            if (sshe_buf_get_u8(&out, &typ) == 0 &&
-                sshe_buf_get_str(&out, &nm, &nmlen) == 0 &&
-                sshe_buf_get_u8(&out, &want_reply) == 0 && want_reply) {
-                msg.len = 0; msg.pos = 0;
-                sshe_buf_u8(&msg, MSG_REQUEST_FAILURE);
-                sshe_tx_send_payload(t, &msg);
+        int pr = sshe_net_poll(&t->sock, 100);   /* 100 ms tick */
+        if (pr < 0) return -1;
+        if (pr == 1) {
+            int r;
+            out.len = 0;
+            out.pos = 0;
+            r = sshe_tx_recv_packet(t, &out);
+            if (r < 0) return -1;
+            switch (r) {
+            case MSG_CHANNEL_DATA: {
+                uint8_t typ;
+                uint32_t rc;
+                const unsigned char *data;
+                size_t dlen;
+                if (sshe_buf_get_u8(&out, &typ) != 0 ||
+                    sshe_buf_get_u32(&out, &rc) != 0 ||
+                    sshe_buf_get_str(&out, &data, &dlen) != 0)
+                    return -1;
+                if (out_fn) out_fn(out_ctx, data, dlen);
+                break;
             }
-            break;
+            case MSG_CHANNEL_EOF:
+                /* send our EOF + close, done */
+                msg.len = 0; msg.pos = 0;
+                sshe_buf_u8(&msg, MSG_CHANNEL_EOF);
+                sshe_buf_u32(&msg, server_chan);
+                sshe_tx_send_payload(t, &msg);
+                msg.len = 0; msg.pos = 0;
+                sshe_buf_u8(&msg, MSG_CHANNEL_CLOSE);
+                sshe_buf_u32(&msg, server_chan);
+                sshe_tx_send_payload(t, &msg);
+                return 0;
+            case MSG_CHANNEL_CLOSE:
+                return 0;
+            case MSG_CHANNEL_WINDOW_ADJUST:
+                break;
+            case MSG_CHANNEL_SUCCESS:
+            case MSG_CHANNEL_FAILURE:
+                /* replies to our channel requests (exec/shell want_reply)
+                   — nothing further to do */
+                break;
+            case MSG_CHANNEL_REQUEST: {
+                /* ignore server requests (keepalive etc.) */
+                break;
+            }
+            case MSG_GLOBAL_REQUEST: {
+                /* server global request — decline politely */
+                uint8_t typ;
+                const unsigned char *nm;
+                size_t nmlen;
+                uint8_t want_reply = 0;
+                if (sshe_buf_get_u8(&out, &typ) == 0 &&
+                    sshe_buf_get_str(&out, &nm, &nmlen) == 0 &&
+                    sshe_buf_get_u8(&out, &want_reply) == 0 && want_reply) {
+                    msg.len = 0; msg.pos = 0;
+                    sshe_buf_u8(&msg, MSG_REQUEST_FAILURE);
+                    sshe_tx_send_payload(t, &msg);
+                }
+                break;
+            }
+            case MSG_IGNORE:
+            case MSG_DEBUG:
+            case MSG_UNIMPLEMENTED:
+                break;
+            default:
+                return -1;
+            }
         }
-        case MSG_IGNORE:
-        case MSG_DEBUG:
-        case MSG_UNIMPLEMENTED:
-            break;
-        default:
-            return -1;
-        }
-        /* interactive stdin: if the callback produced a line/datum,
-         * forward it. M1: send whatever in_fn returns, or nothing. */
-        if (in_fn && r != MSG_CHANNEL_CLOSE) {
+        /* interactive stdin: every tick, ask the callback for data.
+         * The UI layer may open the OSK on a button press and return
+         * a line here. */
+        if (in_fn) {
             unsigned char d[256];
             size_t n = (size_t)in_fn(in_ctx, d, sizeof(d));
             if (n > 0) {
@@ -277,7 +283,7 @@ int sshe_client_run(sshe_tx *t,
                 sshe_buf_u8(&msg, MSG_CHANNEL_DATA);
                 sshe_buf_u32(&msg, server_chan);
                 sshe_buf_str(&msg, d, n);
-                sshe_tx_send_payload(t, &msg);
+                if (sshe_tx_send_payload(t, &msg) != 0) return -1;
             }
         }
     }

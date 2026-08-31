@@ -11,6 +11,9 @@ on:
     branches: [ master ]
     tags: ['v*']
 
+permissions:
+  contents: write
+
 jobs:
   crypto-tests:
     runs-on: ubuntu-latest

@@ -16,6 +16,12 @@ struct sshe_sock { void *impl; };
 /* Connect to host:port. Returns 0 ok, -1 error. */
 int sshe_net_connect(sshe_sock *s, const char *host, unsigned short port);
 
+/* Last socket error code (errno / sceNetInetGetErrno). */
+int sshe_net_errno(sshe_sock *s);
+
+/* Wait up to ms for readability. 1 = readable, 0 = timeout, -1 = err. */
+int sshe_net_poll(sshe_sock *s, int ms);
+
 /* Raw byte transports. Return bytes done or -1. */
 int sshe_net_send(sshe_sock *s, const void *buf, size_t len);
 int sshe_net_recv(sshe_sock *s, void *buf, size_t len);

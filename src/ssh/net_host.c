@@ -99,6 +99,33 @@ int sshe_net_send(sshe_sock *s, const void *buf, size_t len)
 #endif
 }
 
+int sshe_net_errno(sshe_sock *s)
+{
+    (void)s;
+#ifdef _WIN32
+    return WSAGetLastError();
+#else
+    return errno;
+#endif
+}
+
+int sshe_net_poll(sshe_sock *s, int ms)
+{
+    host_impl *h = (host_impl *)s->impl;
+    fd_set rfds;
+    struct timeval tv;
+    int r;
+
+    FD_ZERO(&rfds);
+    FD_SET((unsigned int)h->fd, &rfds);
+    tv.tv_sec = ms / 1000;
+    tv.tv_usec = (long)((ms % 1000) * 1000);
+    r = select((int)h->fd + 1, &rfds, NULL, NULL, &tv);
+    if (r < 0) return -1;
+    if (r == 0) return 0;
+    return FD_ISSET(h->fd, &rfds) ? 1 : 0;
+}
+
 int sshe_net_recv(sshe_sock *s, void *buf, size_t len)
 {
     host_impl *h = (host_impl *)s->impl;
