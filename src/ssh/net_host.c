@@ -12,8 +12,10 @@
 #define _POSIX_C_SOURCE 200809L
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/select.h>
 #include <netdb.h>
 #include <unistd.h>
+#include <errno.h>
 #endif
 #include <string.h>
 #include <stdlib.h>
