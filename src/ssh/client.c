@@ -5,10 +5,14 @@
  * pty-req then exec/shell; data pump between callbacks.
  */
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "client.h"
+
+#define DBG(...) do { if (getenv("PSPSH_DEBUG")) \
+    fprintf(stderr, "[pspssh] " __VA_ARGS__); } while (0)
 
 #define MSG_SERVICE_REQUEST  5
 #define MSG_SERVICE_ACCEPT   6
@@ -45,8 +49,9 @@ static int expect_msg(sshe_tx *t, int want, sshe_buf *out)
         out->len = 0;
         out->pos = 0;
         r = sshe_tx_recv_packet(t, out);
-        if (r < 0) return -1;
+        if (r < 0) { DBG("expect %d: recv failed\n", want); return -1; }
         if (r == want) return 0;
+        DBG("expect %d: got %d\n", want, r);
         if (r == MSG_USERAUTH_BANNER || r == MSG_IGNORE ||
             r == MSG_DEBUG || r == MSG_UNIMPLEMENTED) {
             continue; /* skip noise */

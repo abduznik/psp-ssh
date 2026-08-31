@@ -36,7 +36,8 @@ CFLAGS := $(HOST_CFLAGS) -O2 -Wall
 ifeq ($(shell psp-config --psp-prefix 2>/dev/null),)
     $(info Note: PSP SDK not found — building host test targets only)
 else
-    include $(shell psp-config --pspsdk-path 2>/dev/null)/lib/build.mak
+    PSPSDK := $(shell psp-config --pspsdk-path)
+    include $(PSPSDK)/lib/build.mak
 endif
 
 # ── Host unit tests: crypto vectors ──

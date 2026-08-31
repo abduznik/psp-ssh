@@ -30,6 +30,7 @@ jobs:
           SSH_TEST_PORT: '2222'
           SSH_TEST_USER: sshuser
           SSH_TEST_PASS: pspsshpass
+          PSPSH_DEBUG: '1'
         run: make test-integration
 
   psp-build:
