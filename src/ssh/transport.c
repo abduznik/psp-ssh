@@ -244,7 +244,7 @@ int sshe_tx_recv_packet(sshe_tx *t, sshe_buf *out)
     /* payload = bytes after [len(4)][padlen(1)] */
     pad_len = first[4];
     if (pad_len == 0 || pad_len > 255 || packet_len < 1 + pad_len) {
-        DBG("recv: bad pad_len %u\n", pad_len);
+        DBG("recv: bad pad_len %lu\n", (unsigned long)pad_len);
         free(body);
         return -1;
     }

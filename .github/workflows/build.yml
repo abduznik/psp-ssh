@@ -41,11 +41,11 @@ jobs:
         run: docker run --rm -v ${{ github.workspace }}:/src -w /src pspdev/pspdev make all
       - name: Verify EBOOT produced
         run: |
-          if test -f PSPSH/EBOOT.PBP; then echo "EBOOT OK"; else echo "FAIL: no EBOOT.PBP"; exit 1; fi
+          if test -f EBOOT.PBP; then echo "EBOOT OK"; else echo "FAIL: no EBOOT.PBP"; exit 1; fi
       - name: Package
         run: |
           mkdir -p build/PSPSH
-          cp PSPSH/EBOOT.PBP build/PSPSH/
+          cp EBOOT.PBP build/PSPSH/
           cp README.md build/PSPSH/
           cd build && zip -r PSPSH-0.1.zip PSPSH
       - uses: actions/upload-artifact@v4
@@ -53,12 +53,12 @@ jobs:
           name: pspssh-build
           path: |
             build/PSPSH-0.1.zip
-            PSPSH/EBOOT.PBP
+            EBOOT.PBP
       - name: Release on tag
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
           files: |
             build/PSPSH-0.1.zip
-            PSPSH/EBOOT.PBP
+            EBOOT.PBP
           draft: false

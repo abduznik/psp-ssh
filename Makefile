@@ -4,6 +4,11 @@ TARGET   := PSPSH
 BUILD_DIR := build
 SRC_DIR  := src
 
+# PSP EBOOT packaging (standard PSPSDK template fields)
+EXTRA_TARGETS   := EBOOT.PBP
+PSP_EBOOT_TITLE := PSP SSH Client
+PSP_EBOOT_ICON  :=
+
 # PSP build objects (build.mak expects OBJS)
 OBJS := $(SRC_DIR)/app/main.o \
         $(SRC_DIR)/ssh/net_psp.o \

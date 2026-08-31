@@ -12,3 +12,6 @@ test/test_integration_local.exe
 test/stub_net.c
 .PSPSDK
 *.zip
+EBOOT.PBP
+PSPSH.elf
+PSPSH.prx

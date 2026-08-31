@@ -38,6 +38,10 @@
 #define MSG_CHANNEL_SUCCESS         99
 #define MSG_CHANNEL_FAILURE        100
 
+#define MSG_GLOBAL_REQUEST          80
+#define MSG_REQUEST_SUCCESS         81
+#define MSG_REQUEST_FAILURE         82
+
 #define WIN_SIZE 131072
 
 /* wait for a specific message type, discarding banners/ignores/debug.
@@ -63,6 +67,23 @@ static int expect_msg(sshe_tx *t, int want, sshe_buf *out)
         if (r == MSG_USERAUTH_BANNER || r == MSG_IGNORE ||
             r == MSG_DEBUG || r == MSG_UNIMPLEMENTED) {
             continue; /* skip noise */
+        }
+        if (r == MSG_GLOBAL_REQUEST) {
+            /* RFC 4254 §4: server asked — answer FAILURE unless we
+               implement it (we don't, e.g. hostkeys-00@openssh.com) */
+            uint8_t typ;
+            const unsigned char *nm;
+            size_t nmlen;
+            unsigned int want_reply = 0;
+            if (sshe_buf_get_u8(&out, &typ) == 0 &&
+                sshe_buf_get_str(&out, &nm, &nmlen) == 0 &&
+                sshe_buf_get_u8(&out, &want_reply) == 0 && want_reply) {
+                sshe_buf reply = {0};
+                sshe_buf_u8(&reply, MSG_REQUEST_FAILURE);
+                sshe_tx_send_payload(t, &reply);
+                sshe_buf_free(&reply);
+            }
+            continue; /* keep waiting for what we want */
         }
         if (r == MSG_DISCONNECT) return -1;
         return -1; /* unexpected */
@@ -217,6 +238,21 @@ int sshe_client_run(sshe_tx *t,
             break;
         case MSG_CHANNEL_REQUEST: {
             /* ignore server requests (keepalive etc.) */
+            break;
+        }
+        case MSG_GLOBAL_REQUEST: {
+            /* server global request — decline politely */
+            uint8_t typ;
+            const unsigned char *nm;
+            size_t nmlen;
+            uint8_t want_reply = 0;
+            if (sshe_buf_get_u8(&out, &typ) == 0 &&
+                sshe_buf_get_str(&out, &nm, &nmlen) == 0 &&
+                sshe_buf_get_u8(&out, &want_reply) == 0 && want_reply) {
+                msg.len = 0; msg.pos = 0;
+                sshe_buf_u8(&msg, MSG_REQUEST_FAILURE);
+                sshe_tx_send_payload(t, &msg);
+            }
             break;
         }
         case MSG_IGNORE:
