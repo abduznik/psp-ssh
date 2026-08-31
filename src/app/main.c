@@ -138,6 +138,26 @@ static int init_net(void)
     return 0;
 }
 
+/* Print the PSP's own WLAN identity — proves which subnet we're on
+   and exposes guest-network isolation instantly. */
+static void net_info(void)
+{
+    struct in_addr ip, mask, gw;
+    unsigned int len = sizeof(ip);
+
+    if (sceNetApctlGetInfo(PSP_NET_APCTL_INFO_IP, &ip) == 0)
+        pspDebugScreenPrintf("psp ip : %s\n", inet_ntoa(ip));
+    else
+        pspDebugScreenPrintf("psp ip : (none)\n");
+    if (sceNetApctlGetInfo(PSP_NET_APCTL_INFO_SUBNETMASK, &mask) == 0)
+        pspDebugScreenPrintf("psp msk: %s\n", inet_ntoa(mask));
+    if (sceNetApctlGetInfo(PSP_NET_APCTL_INFO_GATEWAY, &gw) == 0)
+        pspDebugScreenPrintf("psp gw : %s\n", inet_ntoa(gw));
+    if (sceNetApctlGetInfo(PSP_NET_APCTL_INFO_SSID, &ip) == 0)
+        pspDebugScreenPrintf("psp ssid: %s\n", (char *)&ip);
+    (void)len;
+}
+
 /* ── session output: render remote bytes to the debug screen,
       stripping CR and control bytes we cannot show ── */
 static int out_print(void *ctx, const unsigned char *d, size_t n)
@@ -299,10 +319,13 @@ int main(void)
     pspDebugScreenClear();
     pspDebugScreenPrintf("connecting to %s:%u as %s ...\n",
                          cfg_host, (unsigned)cfg_port, cfg_user);
+    pspDebugScreenPrintf("------------------------\n");
 
     if (init_net() != 0) {
         hold("net init failed");
     }
+    net_info();
+    pspDebugScreenPrintf("------------------------\n");
 
     memset(&t, 0, sizeof(t));
     if (sshe_net_connect(&t.sock, cfg_host, cfg_port) != 0) {
