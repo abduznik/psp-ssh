@@ -35,6 +35,12 @@ HOST_OBJS := $(SRC_DIR)/ssh/net_host.o \
 
 INCDIR := $(SRC_DIR) $(SRC_DIR)/crypto $(SRC_DIR)/ssh
 
+# PSP stub libraries. sceGu* (OSK rendering) needs libpspgu; the net
+# stack needs the pspnet libs; utility/ctrl/display/wlan complete it.
+LIBS := -lpspgu -lpsputility -lpspwlan \
+        -lpspnet_apctl -lpspnet_inet -lpspnet \
+        -lpspctrl -lpspdebug -lpspdisplay
+
 # host build flags (PSP build.mak overrides CFLAGS when SDK present)
 HOST_CFLAGS := -Isrc -Isrc/crypto -Isrc/ssh
 CFLAGS := $(HOST_CFLAGS) -O2 -Wall
