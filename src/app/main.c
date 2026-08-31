@@ -18,6 +18,7 @@
 #include <pspnet.h>
 #include <pspnet_inet.h>
 #include <pspnet_apctl.h>
+#include <pspnet_resolver.h>
 #include <psputility.h>
 #include <pspwlan.h>
 #include <stdio.h>
