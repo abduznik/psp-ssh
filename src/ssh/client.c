@@ -71,10 +71,10 @@ static int expect_msg(sshe_tx *t, int want, sshe_buf *out)
         if (r == MSG_GLOBAL_REQUEST) {
             /* RFC 4254 §4: server asked — answer FAILURE unless we
                implement it (we don't, e.g. hostkeys-00@openssh.com) */
-            uint8_t typ;
-            const unsigned char *nm;
-            size_t nmlen;
-            unsigned int want_reply = 0;
+            uint8_t typ, want_reply = 0;
+            const unsigned char *nm = NULL;
+            size_t nmlen = 0;
+            (void)typ; (void)nm; (void)nmlen;
             if (sshe_buf_get_u8(out, &typ) == 0 &&
                 sshe_buf_get_str(out, &nm, &nmlen) == 0 &&
                 sshe_buf_get_u8(out, &want_reply) == 0 && want_reply) {
@@ -236,6 +236,11 @@ int sshe_client_run(sshe_tx *t,
             return 0;
         case MSG_CHANNEL_WINDOW_ADJUST:
             break;
+        case MSG_CHANNEL_SUCCESS:
+        case MSG_CHANNEL_FAILURE:
+            /* replies to our channel requests (exec/shell want_reply)
+               — nothing further to do */
+            break;
         case MSG_CHANNEL_REQUEST: {
             /* ignore server requests (keepalive etc.) */
             break;
@@ -245,7 +250,7 @@ int sshe_client_run(sshe_tx *t,
             uint8_t typ;
             const unsigned char *nm;
             size_t nmlen;
-            unsigned int want_reply = 0;
+            uint8_t want_reply = 0;
             if (sshe_buf_get_u8(&out, &typ) == 0 &&
                 sshe_buf_get_str(&out, &nm, &nmlen) == 0 &&
                 sshe_buf_get_u8(&out, &want_reply) == 0 && want_reply) {
