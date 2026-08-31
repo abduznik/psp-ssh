@@ -19,6 +19,8 @@
 #include <pspnet_apctl.h>
 #include <psputility.h>
 #include <pspwlan.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
