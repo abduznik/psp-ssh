@@ -75,9 +75,9 @@ static int expect_msg(sshe_tx *t, int want, sshe_buf *out)
             const unsigned char *nm;
             size_t nmlen;
             unsigned int want_reply = 0;
-            if (sshe_buf_get_u8(&out, &typ) == 0 &&
-                sshe_buf_get_str(&out, &nm, &nmlen) == 0 &&
-                sshe_buf_get_u8(&out, &want_reply) == 0 && want_reply) {
+            if (sshe_buf_get_u8(out, &typ) == 0 &&
+                sshe_buf_get_str(out, &nm, &nmlen) == 0 &&
+                sshe_buf_get_u8(out, &want_reply) == 0 && want_reply) {
                 sshe_buf reply = {0};
                 sshe_buf_u8(&reply, MSG_REQUEST_FAILURE);
                 sshe_tx_send_payload(t, &reply);
@@ -245,7 +245,7 @@ int sshe_client_run(sshe_tx *t,
             uint8_t typ;
             const unsigned char *nm;
             size_t nmlen;
-            uint8_t want_reply = 0;
+            unsigned int want_reply = 0;
             if (sshe_buf_get_u8(&out, &typ) == 0 &&
                 sshe_buf_get_str(&out, &nm, &nmlen) == 0 &&
                 sshe_buf_get_u8(&out, &want_reply) == 0 && want_reply) {

@@ -1,0 +1,627 @@
+crypto-tests	Set up job	‹¯¨2026-08-31T10:01:26.3265421Z Current runner version: '2.336.0'
+crypto-tests	Set up job	2026-08-31T10:01:26.3296455Z ##[group]Runner Image Provisioner
+crypto-tests	Set up job	2026-08-31T10:01:26.3297658Z Hosted Compute Agent
+crypto-tests	Set up job	2026-08-31T10:01:26.3298270Z Version: 20260819.586
+crypto-tests	Set up job	2026-08-31T10:01:26.3298925Z Commit: 3cc4a88dfa507ef76119ad1bb3eccc6378bb2b76
+crypto-tests	Set up job	2026-08-31T10:01:26.3299638Z Build Date: 2026-08-18T23:20:18Z
+crypto-tests	Set up job	2026-08-31T10:01:26.3300247Z Worker ID: {371a81ec-480c-4a72-b045-b46f7c850a72}
+crypto-tests	Set up job	2026-08-31T10:01:26.3300935Z Azure Region: southcentralus
+crypto-tests	Set up job	2026-08-31T10:01:26.3301526Z ##[endgroup]
+crypto-tests	Set up job	2026-08-31T10:01:26.3303093Z ##[group]Operating System
+crypto-tests	Set up job	2026-08-31T10:01:26.3303703Z Ubuntu
+crypto-tests	Set up job	2026-08-31T10:01:26.3304187Z 24.04.4
+crypto-tests	Set up job	2026-08-31T10:01:26.3304687Z LTS
+crypto-tests	Set up job	2026-08-31T10:01:26.3305163Z ##[endgroup]
+crypto-tests	Set up job	2026-08-31T10:01:26.3305665Z ##[group]Runner Image
+crypto-tests	Set up job	2026-08-31T10:01:26.3306367Z Image: ubuntu-24.04
+crypto-tests	Set up job	2026-08-31T10:01:26.3306900Z Version: 20260823.283.1
+crypto-tests	Set up job	2026-08-31T10:01:26.3308108Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260823.283/images/ubuntu/Ubuntu2404-Readme.md
+crypto-tests	Set up job	2026-08-31T10:01:26.3309710Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260823.283
+crypto-tests	Set up job	2026-08-31T10:01:26.3310678Z ##[endgroup]
+crypto-tests	Set up job	2026-08-31T10:01:26.3311754Z ##[group]GITHUB_TOKEN Permissions
+crypto-tests	Set up job	2026-08-31T10:01:26.3313971Z Contents: read
+crypto-tests	Set up job	2026-08-31T10:01:26.3314571Z Metadata: read
+crypto-tests	Set up job	2026-08-31T10:01:26.3315224Z Packages: read
+crypto-tests	Set up job	2026-08-31T10:01:26.3315735Z ##[endgroup]
+crypto-tests	Set up job	2026-08-31T10:01:26.3318029Z Secret source: Actions
+crypto-tests	Set up job	2026-08-31T10:01:26.3319339Z Prepare workflow directory
+crypto-tests	Set up job	2026-08-31T10:01:26.3631148Z Prepare all required actions
+crypto-tests	Set up job	2026-08-31T10:01:26.3678209Z Getting action download info
+crypto-tests	Set up job	2026-08-31T10:01:26.6533718Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+crypto-tests	Set up job	2026-08-31T10:01:28.1456560Z Complete job name: crypto-tests
+crypto-tests	Run actions/checkout@v4	‹¯¨2026-08-31T10:01:28.2167241Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.2176155Z ##[group]Run actions/checkout@v4
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.2177073Z with:
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.2178054Z   repository: abduznik/psp-ssh
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.2182207Z   token: ***
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.2182850Z   ssh-strict: true
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.2183465Z   ssh-user: git
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.2184080Z   persist-credentials: true
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.2184768Z   clean: true
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.2185380Z   sparse-checkout-cone-mode: true
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.2186062Z   fetch-depth: 1
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.2186679Z   fetch-tags: false
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.2187278Z   show-progress: true
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.2188063Z   lfs: false
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.2188667Z   submodules: false
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.2189423Z   set-safe-directory: true
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.2190089Z   allow-unsafe-pr-checkout: false
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.2191054Z ##[endgroup]
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.3257228Z Syncing repository: abduznik/psp-ssh
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.3260278Z ##[group]Getting Git version info
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.3261241Z Working directory is '/home/runner/work/psp-ssh/psp-ssh'
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.3262630Z [command]/usr/bin/git version
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.4802698Z git version 2.55.0
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.4826019Z ##[endgroup]
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.4841377Z Temporarily overriding HOME='/home/runner/work/_temp/2177ed66-a94c-4042-8aa9-b4184f12ddc2' before making global git config changes
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.4844471Z Adding repository directory to the temporary git global config as a safe directory
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.4847826Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/psp-ssh/psp-ssh
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.4896373Z Deleting the contents of '/home/runner/work/psp-ssh/psp-ssh'
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.4901099Z ##[group]Initializing the repository
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.4906419Z [command]/usr/bin/git init /home/runner/work/psp-ssh/psp-ssh
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.4980013Z hint: Using 'master' as the name for the initial branch. This default branch name
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.4981952Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.4983178Z hint: to use in all of your new repositories, which will suppress this warning,
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.4984401Z hint: call:
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.4984962Z hint:
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.4985789Z hint: 	git config --global init.defaultBranch <name>
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.4986567Z hint:
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.4987753Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.4989408Z hint: 'development'. The just-created branch can be renamed via this command:
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.4990346Z hint:
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.4991013Z hint: 	git branch -m <name>
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.4991649Z hint:
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.4992480Z hint: Disable this message with "git config set advice.defaultBranchName false"
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.4993736Z Initialized empty Git repository in /home/runner/work/psp-ssh/psp-ssh/.git/
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.4996127Z [command]/usr/bin/git remote add origin https://github.com/abduznik/psp-ssh
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.5033109Z ##[endgroup]
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.5034208Z ##[group]Disabling automatic garbage collection
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.5036859Z [command]/usr/bin/git config --local gc.auto 0
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.5066227Z ##[endgroup]
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.5068399Z ##[group]Setting up auth
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.5074138Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.5104255Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.5413306Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.5440527Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.5616633Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.5644936Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.5828668Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.5865939Z ##[endgroup]
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.5981606Z ##[group]Fetching the repository
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:28.5984115Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +025431980bb7dcab6850e5a68cb19c26d3b0ed1c:refs/remotes/origin/master
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:29.0138979Z From https://github.com/abduznik/psp-ssh
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:29.0141609Z  * [new ref]         025431980bb7dcab6850e5a68cb19c26d3b0ed1c -> origin/master
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:29.0147017Z ##[endgroup]
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:29.0149852Z ##[group]Determining the checkout info
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:29.0152603Z ##[endgroup]
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:29.0154214Z [command]/usr/bin/git sparse-checkout disable
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:29.0199874Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:29.0225676Z ##[group]Checking out the ref
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:29.0232459Z [command]/usr/bin/git checkout --progress --force -B master refs/remotes/origin/master
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:29.0305186Z Reset branch 'master'
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:29.0308666Z branch 'master' set up to track 'origin/master'.
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:29.0314279Z ##[endgroup]
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:29.0353226Z [command]/usr/bin/git log -1 --format=%H
+crypto-tests	Run actions/checkout@v4	2026-08-31T10:01:29.0373827Z 025431980bb7dcab6850e5a68cb19c26d3b0ed1c
+crypto-tests	Run crypto vector tests	‹¯¨2026-08-31T10:01:29.0621111Z ##[group]Run make test
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.0622336Z [36;1mmake test[0m
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.0649680Z shell: /usr/bin/bash -e {0}
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.0650841Z ##[endgroup]
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.0755650Z Note: PSP SDK not found ƒ?" building host test targets only
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.0765322Z cc -Isrc -Isrc/crypto -Isrc/ssh -O2 -Wall   -c -o src/ssh/net_host.o src/ssh/net_host.c
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.2156059Z cc -Isrc -Isrc/crypto -Isrc/ssh -O2 -Wall   -c -o src/ssh/transport.o src/ssh/transport.c
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.2415137Z src/ssh/transport.c: In function ƒ?~sshe_tx_recv_packetƒ?T:
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.2419215Z src/ssh/transport.c:183:19: warning: unused variable ƒ?~macƒ?T [-Wunused-variable]
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.2422151Z   183 |     unsigned char mac[SSH_MAC_LEN];
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.2424130Z       |                   ^~~
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.4140154Z cc -Isrc -Isrc/crypto -Isrc/ssh -O2 -Wall   -c -o src/ssh/client.o src/ssh/client.c
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.4310714Z src/ssh/client.c: In function ƒ?~expect_msgƒ?T:
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.4315375Z src/ssh/client.c:78:33: warning: passing argument 1 of ƒ?~sshe_buf_get_u8ƒ?T from incompatible pointer type [-Wincompatible-pointer-types]
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.4319060Z    78 |             if (sshe_buf_get_u8(&out, &typ) == 0 &&
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.4320683Z       |                                 ^~~~
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.4322083Z       |                                 |
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.4323523Z       |                                 sshe_buf **
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.4325126Z In file included from src/ssh/transport.h:11,
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.4326685Z                  from src/ssh/client.h:7,
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.4328404Z                  from src/ssh/client.c:12:
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.4330621Z src/ssh/buf.h:28:33: note: expected ƒ?~sshe_buf *ƒ?T but argument is of type ƒ?~sshe_buf **ƒ?T
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.4332843Z    28 | int   sshe_buf_get_u8(sshe_buf *b, uint8_t *v);
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.4334400Z       |                       ~~~~~~~~~~^
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.4337318Z src/ssh/client.c:79:34: warning: passing argument 1 of ƒ?~sshe_buf_get_strƒ?T from incompatible pointer type [-Wincompatible-pointer-types]
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.4340492Z    79 |                 sshe_buf_get_str(&out, &nm, &nmlen) == 0 &&
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.4342067Z       |                                  ^~~~
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.4343245Z       |                                  |
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.4344387Z       |                                  sshe_buf **
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.4346110Z src/ssh/buf.h:31:34: note: expected ƒ?~sshe_buf *ƒ?T but argument is of type ƒ?~sshe_buf **ƒ?T
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.4348411Z    31 | int   sshe_buf_get_str(sshe_buf *b, const unsigned char **p, size_t *n);
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.4349963Z       |                        ~~~~~~~~~~^
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.4352346Z src/ssh/client.c:80:33: warning: passing argument 1 of ƒ?~sshe_buf_get_u8ƒ?T from incompatible pointer type [-Wincompatible-pointer-types]
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.4354985Z    80 |                 sshe_buf_get_u8(&out, &want_reply) == 0 && want_reply) {
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.4356424Z       |                                 ^~~~
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.4357704Z       |                                 |
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.4358855Z       |                                 sshe_buf **
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.4360595Z src/ssh/buf.h:28:33: note: expected ƒ?~sshe_buf *ƒ?T but argument is of type ƒ?~sshe_buf **ƒ?T
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.4362401Z    28 | int   sshe_buf_get_u8(sshe_buf *b, uint8_t *v);
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.4363669Z       |                       ~~~~~~~~~~^
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.4366056Z src/ssh/client.c:80:39: warning: passing argument 2 of ƒ?~sshe_buf_get_u8ƒ?T from incompatible pointer type [-Wincompatible-pointer-types]
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.4368870Z    80 |                 sshe_buf_get_u8(&out, &want_reply) == 0 && want_reply) {
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.4370369Z       |                                       ^~~~~~~~~~~
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.4371587Z       |                                       |
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.4372809Z       |                                       unsigned int *
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.4374860Z src/ssh/buf.h:28:45: note: expected ƒ?~uint8_t *ƒ?T {aka ƒ?~unsigned char *ƒ?T} but argument is of type ƒ?~unsigned int *ƒ?T
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.4377429Z    28 | int   sshe_buf_get_u8(sshe_buf *b, uint8_t *v);
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.4378765Z       |                                    ~~~~~~~~~^
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.4774938Z cc -Isrc -Isrc/crypto -Isrc/ssh -O2 -Wall   -c -o src/ssh/buf.o src/ssh/buf.c
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.5338115Z cc -Isrc -Isrc/crypto -Isrc/ssh -O2 -Wall   -c -o src/crypto/sshcrypto.o src/crypto/sshcrypto.c
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.5431142Z src/crypto/sshcrypto.c: In function ƒ?~hmac_blockƒ?T:
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.5433201Z src/crypto/sshcrypto.c:34:13: warning: unused variable ƒ?~bufƒ?T [-Wunused-variable]
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.5434853Z    34 |     uint8_t buf[64];
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.5435840Z       |             ^~~
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.5437488Z src/crypto/sshcrypto.c:33:13: warning: unused variable ƒ?~digestƒ?T [-Wunused-variable]
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.5439208Z    33 |     uint8_t digest[32];
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.5440192Z       |             ^~~~~~
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.5782606Z cc -Isrc -Isrc/crypto -Isrc/ssh -O2 -Wall   -c -o src/crypto/tweetnacl.o src/crypto/tweetnacl.c
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:29.9946383Z cc -Isrc -Isrc/crypto -Isrc/ssh -O2 -Wall   -c -o src/crypto/aes.o src/crypto/aes.c
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:30.1011059Z cc -Isrc -Isrc/crypto -Isrc/ssh -O2 -Wall   -c -o src/crypto/sha256.o src/crypto/sha256.c
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:30.1733680Z cc -Isrc -Isrc/crypto -Isrc/ssh -O2 -Wall   -c -o src/crypto/sha1.o src/crypto/sha1.c
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:30.2324903Z cc -Isrc -Isrc/crypto -Isrc/ssh -o test/test_crypto test/test_crypto.c src/ssh/net_host.o src/ssh/transport.o src/ssh/client.o src/ssh/buf.o src/crypto/sshcrypto.o src/crypto/tweetnacl.o src/crypto/aes.o src/crypto/sha256.o src/crypto/sha1.o
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:30.2774233Z ./test/test_crypto
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:30.2846713Z PASS RFC7748 X25519 vector
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:30.2847878Z PASS RFC8032 ed25519 verify (empty msg)
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:30.2848414Z PASS RFC8032 ed25519 tampered sig rejected
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:30.2848914Z PASS SHA256('abc')
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:30.2849359Z PASS HMAC-SHA1 RFC2202 #1
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:30.2850011Z PASS HMAC-SHA256 RFC4231 #1
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:30.2850653Z PASS AES128-CTR NIST F.5.1
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:30.2850954Z 
+crypto-tests	Run crypto vector tests	2026-08-31T10:01:30.2851193Z ALL TESTS PASSED (0 failures)
+crypto-tests	Post Run actions/checkout@v4	‹¯¨2026-08-31T10:01:30.2977493Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+crypto-tests	Post Run actions/checkout@v4	2026-08-31T10:01:30.2979162Z Post job cleanup.
+crypto-tests	Post Run actions/checkout@v4	2026-08-31T10:01:30.3831820Z [command]/usr/bin/git version
+crypto-tests	Post Run actions/checkout@v4	2026-08-31T10:01:30.3877665Z git version 2.55.0
+crypto-tests	Post Run actions/checkout@v4	2026-08-31T10:01:30.3923621Z Temporarily overriding HOME='/home/runner/work/_temp/587de53d-2346-441e-b326-a8177b67db2b' before making global git config changes
+crypto-tests	Post Run actions/checkout@v4	2026-08-31T10:01:30.3924891Z Adding repository directory to the temporary git global config as a safe directory
+crypto-tests	Post Run actions/checkout@v4	2026-08-31T10:01:30.3930732Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/psp-ssh/psp-ssh
+crypto-tests	Post Run actions/checkout@v4	2026-08-31T10:01:30.3971385Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+crypto-tests	Post Run actions/checkout@v4	2026-08-31T10:01:30.4005198Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+crypto-tests	Post Run actions/checkout@v4	2026-08-31T10:01:30.4210093Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+crypto-tests	Post Run actions/checkout@v4	2026-08-31T10:01:30.4239018Z http.https://github.com/.extraheader
+crypto-tests	Post Run actions/checkout@v4	2026-08-31T10:01:30.4255047Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+crypto-tests	Post Run actions/checkout@v4	2026-08-31T10:01:30.4288830Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+crypto-tests	Post Run actions/checkout@v4	2026-08-31T10:01:30.4505891Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+crypto-tests	Post Run actions/checkout@v4	2026-08-31T10:01:30.4527973Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+crypto-tests	Complete job	‹¯¨2026-08-31T10:01:30.4904441Z Cleaning up orphan processes
+crypto-tests	Complete job	2026-08-31T10:01:30.5134681Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+psp-build	Set up job	‹¯¨2026-08-31T10:01:26.2769934Z Current runner version: '2.336.0'
+psp-build	Set up job	2026-08-31T10:01:26.2806742Z ##[group]Runner Image Provisioner
+psp-build	Set up job	2026-08-31T10:01:26.2808704Z Hosted Compute Agent
+psp-build	Set up job	2026-08-31T10:01:26.2809739Z Version: 20260819.586
+psp-build	Set up job	2026-08-31T10:01:26.2811446Z Commit: 3cc4a88dfa507ef76119ad1bb3eccc6378bb2b76
+psp-build	Set up job	2026-08-31T10:01:26.2812836Z Build Date: 2026-08-18T23:20:18Z
+psp-build	Set up job	2026-08-31T10:01:26.2814250Z Worker ID: {53116336-b5a8-4e93-a3a7-1a9ea1368e18}
+psp-build	Set up job	2026-08-31T10:01:26.2815600Z Azure Region: eastus
+psp-build	Set up job	2026-08-31T10:01:26.2816961Z ##[endgroup]
+psp-build	Set up job	2026-08-31T10:01:26.2819996Z ##[group]Operating System
+psp-build	Set up job	2026-08-31T10:01:26.2821052Z Ubuntu
+psp-build	Set up job	2026-08-31T10:01:26.2822115Z 24.04.4
+psp-build	Set up job	2026-08-31T10:01:26.2823004Z LTS
+psp-build	Set up job	2026-08-31T10:01:26.2823894Z ##[endgroup]
+psp-build	Set up job	2026-08-31T10:01:26.2824877Z ##[group]Runner Image
+psp-build	Set up job	2026-08-31T10:01:26.2826222Z Image: ubuntu-24.04
+psp-build	Set up job	2026-08-31T10:01:26.2827301Z Version: 20260823.283.1
+psp-build	Set up job	2026-08-31T10:01:26.2829186Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260823.283/images/ubuntu/Ubuntu2404-Readme.md
+psp-build	Set up job	2026-08-31T10:01:26.2832282Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260823.283
+psp-build	Set up job	2026-08-31T10:01:26.2833908Z ##[endgroup]
+psp-build	Set up job	2026-08-31T10:01:26.2836297Z ##[group]GITHUB_TOKEN Permissions
+psp-build	Set up job	2026-08-31T10:01:26.2839247Z Contents: read
+psp-build	Set up job	2026-08-31T10:01:26.2840345Z Metadata: read
+psp-build	Set up job	2026-08-31T10:01:26.2841275Z Packages: read
+psp-build	Set up job	2026-08-31T10:01:26.2842356Z ##[endgroup]
+psp-build	Set up job	2026-08-31T10:01:26.2845958Z Secret source: Actions
+psp-build	Set up job	2026-08-31T10:01:26.2847848Z Prepare workflow directory
+psp-build	Set up job	2026-08-31T10:01:26.3335536Z Prepare all required actions
+psp-build	Set up job	2026-08-31T10:01:26.3407888Z Getting action download info
+psp-build	Set up job	2026-08-31T10:01:26.5258652Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+psp-build	Set up job	2026-08-31T10:01:26.6533864Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+psp-build	Set up job	2026-08-31T10:01:26.7696890Z Download action repository 'softprops/action-gh-release@v2' (SHA:3bb12739c298aeb8a4eeaf626c5b8d85266b0e65)
+psp-build	Set up job	2026-08-31T10:01:26.9992716Z Complete job name: psp-build
+psp-build	Run actions/checkout@v4	‹¯¨2026-08-31T10:01:27.0749951Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.0758374Z ##[group]Run actions/checkout@v4
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.0759134Z with:
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.0759577Z   repository: abduznik/psp-ssh
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.0763374Z   token: ***
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.0763809Z   ssh-strict: true
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.0764235Z   ssh-user: git
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.0764671Z   persist-credentials: true
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.0765148Z   clean: true
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.0765587Z   sparse-checkout-cone-mode: true
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.0766295Z   fetch-depth: 1
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.0766718Z   fetch-tags: false
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.0767147Z   show-progress: true
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.0767587Z   lfs: false
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.0768009Z   submodules: false
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.0768529Z   set-safe-directory: true
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.0769032Z   allow-unsafe-pr-checkout: false
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.0769814Z ##[endgroup]
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.1764477Z Syncing repository: abduznik/psp-ssh
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.1766750Z ##[group]Getting Git version info
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.1767537Z Working directory is '/home/runner/work/psp-ssh/psp-ssh'
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.1768615Z [command]/usr/bin/git version
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.1853341Z git version 2.55.0
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.1910656Z ##[endgroup]
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.1928701Z Temporarily overriding HOME='/home/runner/work/_temp/b39596b8-4e26-4fc7-8be8-3f4e300f3fc5' before making global git config changes
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.1931291Z Adding repository directory to the temporary git global config as a safe directory
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.1934387Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/psp-ssh/psp-ssh
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.1989172Z Deleting the contents of '/home/runner/work/psp-ssh/psp-ssh'
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.1993839Z ##[group]Initializing the repository
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.1999544Z [command]/usr/bin/git init /home/runner/work/psp-ssh/psp-ssh
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.2114654Z hint: Using 'master' as the name for the initial branch. This default branch name
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.2116719Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.2118641Z hint: to use in all of your new repositories, which will suppress this warning,
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.2119942Z hint: call:
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.2120724Z hint:
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.2121686Z hint: 	git config --global init.defaultBranch <name>
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.2122827Z hint:
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.2123926Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.2125628Z hint: 'development'. The just-created branch can be renamed via this command:
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.2127975Z hint:
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.2128696Z hint: 	git branch -m <name>
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.2129519Z hint:
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.2130621Z hint: Disable this message with "git config set advice.defaultBranchName false"
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.2132597Z Initialized empty Git repository in /home/runner/work/psp-ssh/psp-ssh/.git/
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.2135519Z [command]/usr/bin/git remote add origin https://github.com/abduznik/psp-ssh
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.2184094Z ##[endgroup]
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.2185416Z ##[group]Disabling automatic garbage collection
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.2188425Z [command]/usr/bin/git config --local gc.auto 0
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.2238135Z ##[endgroup]
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.2239387Z ##[group]Setting up auth
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.2240724Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.2269064Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.2675479Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.2715242Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.2969988Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.3015207Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.3285545Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.3325096Z ##[endgroup]
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.3326317Z ##[group]Fetching the repository
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.3336089Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +025431980bb7dcab6850e5a68cb19c26d3b0ed1c:refs/remotes/origin/master
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.5957858Z From https://github.com/abduznik/psp-ssh
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.5959172Z  * [new ref]         025431980bb7dcab6850e5a68cb19c26d3b0ed1c -> origin/master
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.5963717Z ##[endgroup]
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.5965451Z ##[group]Determining the checkout info
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.5967814Z ##[endgroup]
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.5976579Z [command]/usr/bin/git sparse-checkout disable
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.6038151Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.6073706Z ##[group]Checking out the ref
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.6080566Z [command]/usr/bin/git checkout --progress --force -B master refs/remotes/origin/master
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.6175389Z Reset branch 'master'
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.6182026Z branch 'master' set up to track 'origin/master'.
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.6195424Z ##[endgroup]
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.6237063Z [command]/usr/bin/git log -1 --format=%H
+psp-build	Run actions/checkout@v4	2026-08-31T10:01:27.6263088Z 025431980bb7dcab6850e5a68cb19c26d3b0ed1c
+psp-build	Build PSP EBOOT (pspdev Docker)	‹¯¨2026-08-31T10:01:27.6521384Z ##[group]Run docker run --rm -v /home/runner/work/psp-ssh/psp-ssh:/src -w /src pspdev/pspdev make all
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:27.6524084Z [36;1mdocker run --rm -v /home/runner/work/psp-ssh/psp-ssh:/src -w /src pspdev/pspdev make all[0m
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:27.6566907Z shell: /usr/bin/bash -e {0}
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:27.6567750Z ##[endgroup]
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:27.7482905Z Unable to find image 'pspdev/pspdev:latest' locally
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:27.9875761Z latest: Pulling from pspdev/pspdev
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:27.9886350Z 55afa1ecc21d: Already exists
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:27.9933896Z 8512a4437afa: Pulling fs layer
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:27.9935943Z 108ec630dfb9: Pulling fs layer
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:28.3238055Z 108ec630dfb9: Verifying Checksum
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:28.3240006Z 108ec630dfb9: Download complete
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:28.5396574Z 8512a4437afa: Verifying Checksum
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:28.5397645Z 8512a4437afa: Download complete
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:33.0486282Z 8512a4437afa: Pull complete
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:34.5471016Z 108ec630dfb9: Pull complete
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:34.5507272Z Digest: sha256:c1dd948b190e9141242cf321316eb2b54562b274c9be78e24a66fe6d30a5dc24
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:34.5518315Z Status: Downloaded newer image for pspdev/pspdev:latest
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:34.7390674Z psp-gcc -Isrc -Isrc/crypto -Isrc/ssh -I. -I/usr/local/pspdev/psp/include -I/usr/local/pspdev/psp/sdk/include -Isrc -Isrc/crypto -Isrc/ssh -O2 -Wall -D_PSP_FW_VERSION=600   -c -o src/app/main.o src/app/main.c
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:34.7841957Z src/app/main.c: In function 'main':
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:34.7843663Z src/app/main.c:51:86: warning: '%s' directive output may be truncated writing up to 239 bytes into a region of size 64 [-Wformat-truncation=]
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:34.7845365Z    51 |             else if (strcmp(key, "pass") == 0) snprintf(cfg_pass, sizeof(cfg_pass), "%s", val);
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:34.7849129Z       |                                                                                      ^~   ~~~
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:34.7849879Z In function 'load_config',
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:34.7850484Z     inlined from 'main' at src/app/main.c:82:5:
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:34.7851553Z src/app/main.c:51:48: note: 'snprintf' output between 1 and 240 bytes into a destination of size 64
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:34.7916011Z    51 |             else if (strcmp(key, "pass") == 0) snprintf(cfg_pass, sizeof(cfg_pass), "%s", val);
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:34.7917053Z       |                                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:34.7917615Z src/app/main.c: In function 'main':
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:34.7918306Z src/app/main.c:50:86: warning: '%s' directive output may be truncated writing up to 239 bytes into a region of size 32 [-Wformat-truncation=]
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:34.7919126Z    50 |             else if (strcmp(key, "user") == 0) snprintf(cfg_user, sizeof(cfg_user), "%s", val);
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:34.7919677Z       |                                                                                      ^~   ~~~
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:34.7920061Z In function 'load_config',
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:34.7920383Z     inlined from 'main' at src/app/main.c:82:5:
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:34.7920997Z src/app/main.c:50:48: note: 'snprintf' output between 1 and 240 bytes into a destination of size 32
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:34.7921633Z    50 |             else if (strcmp(key, "user") == 0) snprintf(cfg_user, sizeof(cfg_user), "%s", val);
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:34.7922154Z       |                                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:34.7922581Z src/app/main.c: In function 'main':
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:34.7923222Z src/app/main.c:48:86: warning: '%s' directive output may be truncated writing up to 239 bytes into a region of size 64 [-Wformat-truncation=]
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:34.7923989Z    48 |             if (strcmp(key, "host") == 0)      snprintf(cfg_host, sizeof(cfg_host), "%s", val);
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:34.7924493Z       |                                                                                      ^~   ~~~
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:34.7924867Z In function 'load_config',
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:34.7925168Z     inlined from 'main' at src/app/main.c:82:5:
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:34.7937379Z src/app/main.c:48:48: note: 'snprintf' output between 1 and 240 bytes into a destination of size 64
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:34.7938581Z    48 |             if (strcmp(key, "host") == 0)      snprintf(cfg_host, sizeof(cfg_host), "%s", val);
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:34.7939382Z       |                                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:34.8058409Z psp-gcc -Isrc -Isrc/crypto -Isrc/ssh -I. -I/usr/local/pspdev/psp/include -I/usr/local/pspdev/psp/sdk/include -Isrc -Isrc/crypto -Isrc/ssh -O2 -Wall -D_PSP_FW_VERSION=600   -c -o src/ssh/net_psp.o src/ssh/net_psp.c
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:34.8665239Z psp-gcc -Isrc -Isrc/crypto -Isrc/ssh -I. -I/usr/local/pspdev/psp/include -I/usr/local/pspdev/psp/sdk/include -Isrc -Isrc/crypto -Isrc/ssh -O2 -Wall -D_PSP_FW_VERSION=600   -c -o src/ssh/transport.o src/ssh/transport.c
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:34.8888790Z src/ssh/transport.c: In function 'sshe_tx_recv_packet':
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:34.8890576Z src/ssh/transport.c:32:53: warning: format '%u' expects argument of type 'unsigned int', but argument 3 has type 'uint32_t' {aka 'long unsigned int'} [-Wformat=]
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:34.8892072Z    32 | #define DBG(...) do { if (dbg_on()) fprintf(stderr, "[pspssh] " __VA_ARGS__); } while (0)
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:34.8893170Z       |                                                     ^~~~~~~~~~~
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:34.8894060Z src/ssh/transport.c:201:9: note: in expansion of macro 'DBG'
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:34.8894830Z   201 |         DBG("recv: bad packet_len %u\n", packet_len);
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:34.8895254Z       |         ^~~
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:34.8898527Z src/ssh/transport.c:183:19: warning: unused variable 'mac' [-Wunused-variable]
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:34.8899442Z   183 |     unsigned char mac[SSH_MAC_LEN];
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:34.8900012Z       |                   ^~~
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:35.1696801Z psp-gcc -Isrc -Isrc/crypto -Isrc/ssh -I. -I/usr/local/pspdev/psp/include -I/usr/local/pspdev/psp/sdk/include -Isrc -Isrc/crypto -Isrc/ssh -O2 -Wall -D_PSP_FW_VERSION=600   -c -o src/ssh/client.o src/ssh/client.c
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:35.1915468Z src/ssh/client.c: In function 'expect_msg':
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:35.1917710Z src/ssh/client.c:78:33: error: passing argument 1 of 'sshe_buf_get_u8' from incompatible pointer type [-Wincompatible-pointer-types]
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:35.1919712Z    78 |             if (sshe_buf_get_u8(&out, &typ) == 0 &&
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:35.1920885Z       |                                 ^~~~
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:35.1921930Z       |                                 |
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:35.1922668Z       |                                 sshe_buf **
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:35.1923603Z In file included from src/ssh/transport.h:11,
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:35.1924398Z                  from src/ssh/client.h:7,
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:35.1925068Z                  from src/ssh/client.c:12:
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:35.1926334Z src/ssh/buf.h:28:33: note: expected 'sshe_buf *' but argument is of type 'sshe_buf **'
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:35.1927517Z    28 | int   sshe_buf_get_u8(sshe_buf *b, uint8_t *v);
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:35.1928497Z       |                       ~~~~~~~~~~^
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:35.1929859Z src/ssh/client.c:79:34: error: passing argument 1 of 'sshe_buf_get_str' from incompatible pointer type [-Wincompatible-pointer-types]
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:35.1931351Z    79 |                 sshe_buf_get_str(&out, &nm, &nmlen) == 0 &&
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:35.1932232Z       |                                  ^~~~
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:35.1933010Z       |                                  |
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:35.1933816Z       |                                  sshe_buf **
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:35.1934829Z src/ssh/buf.h:31:34: note: expected 'sshe_buf *' but argument is of type 'sshe_buf **'
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:35.1936401Z    31 | int   sshe_buf_get_str(sshe_buf *b, const unsigned char **p, size_t *n);
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:35.1937420Z       |                        ~~~~~~~~~~^
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:35.1938726Z src/ssh/client.c:80:33: error: passing argument 1 of 'sshe_buf_get_u8' from incompatible pointer type [-Wincompatible-pointer-types]
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:35.1940866Z    80 |                 sshe_buf_get_u8(&out, &want_reply) == 0 && want_reply) {
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:35.1941746Z       |                                 ^~~~
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:35.1942443Z       |                                 |
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:35.1943148Z       |                                 sshe_buf **
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:35.1944114Z src/ssh/buf.h:28:33: note: expected 'sshe_buf *' but argument is of type 'sshe_buf **'
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:35.1945304Z    28 | int   sshe_buf_get_u8(sshe_buf *b, uint8_t *v);
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:35.1946455Z       |                       ~~~~~~~~~~^
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:35.1947796Z src/ssh/client.c:80:39: error: passing argument 2 of 'sshe_buf_get_u8' from incompatible pointer type [-Wincompatible-pointer-types]
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:35.1949221Z    80 |                 sshe_buf_get_u8(&out, &want_reply) == 0 && want_reply) {
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:35.1950093Z       |                                       ^~~~~~~~~~~
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:35.1950851Z       |                                       |
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:35.1951595Z       |                                       unsigned int *
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:35.1952719Z src/ssh/buf.h:28:45: note: expected 'uint8_t *' {aka 'unsigned char *'} but argument is of type 'unsigned int *'
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:35.1953947Z    28 | int   sshe_buf_get_u8(sshe_buf *b, uint8_t *v);
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:35.1954787Z       |                                    ~~~~~~~~~^
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:35.1957677Z make: *** [<builtin>: src/ssh/client.o] Error 1
+psp-build	Build PSP EBOOT (pspdev Docker)	2026-08-31T10:01:35.2678356Z ##[error]Process completed with exit code 2.
+psp-build	Post Run actions/checkout@v4	‹¯¨2026-08-31T10:01:35.2848326Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+psp-build	Post Run actions/checkout@v4	2026-08-31T10:01:35.2850221Z Post job cleanup.
+psp-build	Post Run actions/checkout@v4	2026-08-31T10:01:35.3686756Z [command]/usr/bin/git version
+psp-build	Post Run actions/checkout@v4	2026-08-31T10:01:35.3736548Z git version 2.55.0
+psp-build	Post Run actions/checkout@v4	2026-08-31T10:01:35.3803999Z Temporarily overriding HOME='/home/runner/work/_temp/d4068e82-9500-4948-b9b0-3169fa29f4f2' before making global git config changes
+psp-build	Post Run actions/checkout@v4	2026-08-31T10:01:35.3805402Z Adding repository directory to the temporary git global config as a safe directory
+psp-build	Post Run actions/checkout@v4	2026-08-31T10:01:35.3810910Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/psp-ssh/psp-ssh
+psp-build	Post Run actions/checkout@v4	2026-08-31T10:01:35.3849385Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+psp-build	Post Run actions/checkout@v4	2026-08-31T10:01:35.3884884Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+psp-build	Post Run actions/checkout@v4	2026-08-31T10:01:35.4146940Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+psp-build	Post Run actions/checkout@v4	2026-08-31T10:01:35.4169454Z http.https://github.com/.extraheader
+psp-build	Post Run actions/checkout@v4	2026-08-31T10:01:35.4182429Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+psp-build	Post Run actions/checkout@v4	2026-08-31T10:01:35.4219143Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+psp-build	Post Run actions/checkout@v4	2026-08-31T10:01:35.4472301Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+psp-build	Post Run actions/checkout@v4	2026-08-31T10:01:35.4511476Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+psp-build	Complete job	‹¯¨2026-08-31T10:01:35.4895531Z Cleaning up orphan processes
+psp-build	Complete job	2026-08-31T10:01:35.5287188Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+integration	Set up job	‹¯¨2026-08-31T10:01:26.3541330Z Current runner version: '2.336.0'
+integration	Set up job	2026-08-31T10:01:26.3564779Z ##[group]Runner Image Provisioner
+integration	Set up job	2026-08-31T10:01:26.3565563Z Hosted Compute Agent
+integration	Set up job	2026-08-31T10:01:26.3566154Z Version: 20260819.586
+integration	Set up job	2026-08-31T10:01:26.3566679Z Commit: 3cc4a88dfa507ef76119ad1bb3eccc6378bb2b76
+integration	Set up job	2026-08-31T10:01:26.3567263Z Build Date: 2026-08-18T23:20:18Z
+integration	Set up job	2026-08-31T10:01:26.3567874Z Worker ID: {67012d7f-45ea-4afd-9e91-a5e30a5041c4}
+integration	Set up job	2026-08-31T10:01:26.3568498Z Azure Region: westus3
+integration	Set up job	2026-08-31T10:01:26.3569001Z ##[endgroup]
+integration	Set up job	2026-08-31T10:01:26.3570243Z ##[group]Operating System
+integration	Set up job	2026-08-31T10:01:26.3570765Z Ubuntu
+integration	Set up job	2026-08-31T10:01:26.3571319Z 24.04.4
+integration	Set up job	2026-08-31T10:01:26.3571773Z LTS
+integration	Set up job	2026-08-31T10:01:26.3572262Z ##[endgroup]
+integration	Set up job	2026-08-31T10:01:26.3572729Z ##[group]Runner Image
+integration	Set up job	2026-08-31T10:01:26.3573221Z Image: ubuntu-24.04
+integration	Set up job	2026-08-31T10:01:26.3573733Z Version: 20260823.283.1
+integration	Set up job	2026-08-31T10:01:26.3574625Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260823.283/images/ubuntu/Ubuntu2404-Readme.md
+integration	Set up job	2026-08-31T10:01:26.3576041Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260823.283
+integration	Set up job	2026-08-31T10:01:26.3576841Z ##[endgroup]
+integration	Set up job	2026-08-31T10:01:26.3577803Z ##[group]GITHUB_TOKEN Permissions
+integration	Set up job	2026-08-31T10:01:26.3579843Z Contents: read
+integration	Set up job	2026-08-31T10:01:26.3580463Z Metadata: read
+integration	Set up job	2026-08-31T10:01:26.3580927Z Packages: read
+integration	Set up job	2026-08-31T10:01:26.3581449Z ##[endgroup]
+integration	Set up job	2026-08-31T10:01:26.3583189Z Secret source: Actions
+integration	Set up job	2026-08-31T10:01:26.3584085Z Prepare workflow directory
+integration	Set up job	2026-08-31T10:01:26.3973883Z Prepare all required actions
+integration	Set up job	2026-08-31T10:01:26.4044390Z Getting action download info
+integration	Set up job	2026-08-31T10:01:26.6694559Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+integration	Set up job	2026-08-31T10:01:26.8435671Z Complete job name: integration
+integration	Run actions/checkout@v4	‹¯¨2026-08-31T10:01:26.9098254Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+integration	Run actions/checkout@v4	2026-08-31T10:01:26.9105339Z ##[group]Run actions/checkout@v4
+integration	Run actions/checkout@v4	2026-08-31T10:01:26.9105897Z with:
+integration	Run actions/checkout@v4	2026-08-31T10:01:26.9106256Z   repository: abduznik/psp-ssh
+integration	Run actions/checkout@v4	2026-08-31T10:01:26.9109467Z   token: ***
+integration	Run actions/checkout@v4	2026-08-31T10:01:26.9109964Z   ssh-strict: true
+integration	Run actions/checkout@v4	2026-08-31T10:01:26.9110315Z   ssh-user: git
+integration	Run actions/checkout@v4	2026-08-31T10:01:26.9110667Z   persist-credentials: true
+integration	Run actions/checkout@v4	2026-08-31T10:01:26.9111054Z   clean: true
+integration	Run actions/checkout@v4	2026-08-31T10:01:26.9111408Z   sparse-checkout-cone-mode: true
+integration	Run actions/checkout@v4	2026-08-31T10:01:26.9111892Z   fetch-depth: 1
+integration	Run actions/checkout@v4	2026-08-31T10:01:26.9112240Z   fetch-tags: false
+integration	Run actions/checkout@v4	2026-08-31T10:01:26.9112586Z   show-progress: true
+integration	Run actions/checkout@v4	2026-08-31T10:01:26.9112938Z   lfs: false
+integration	Run actions/checkout@v4	2026-08-31T10:01:26.9113265Z   submodules: false
+integration	Run actions/checkout@v4	2026-08-31T10:01:26.9113661Z   set-safe-directory: true
+integration	Run actions/checkout@v4	2026-08-31T10:01:26.9114069Z   allow-unsafe-pr-checkout: false
+integration	Run actions/checkout@v4	2026-08-31T10:01:26.9114651Z ##[endgroup]
+integration	Run actions/checkout@v4	2026-08-31T10:01:26.9888505Z Syncing repository: abduznik/psp-ssh
+integration	Run actions/checkout@v4	2026-08-31T10:01:26.9890388Z ##[group]Getting Git version info
+integration	Run actions/checkout@v4	2026-08-31T10:01:26.9890986Z Working directory is '/home/runner/work/psp-ssh/psp-ssh'
+integration	Run actions/checkout@v4	2026-08-31T10:01:26.9891857Z [command]/usr/bin/git version
+integration	Run actions/checkout@v4	2026-08-31T10:01:26.9937916Z git version 2.55.0
+integration	Run actions/checkout@v4	2026-08-31T10:01:26.9989490Z ##[endgroup]
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.0002902Z Temporarily overriding HOME='/home/runner/work/_temp/fb2a6950-833f-4d86-87cc-23bcbebd3510' before making global git config changes
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.0004897Z Adding repository directory to the temporary git global config as a safe directory
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.0008640Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/psp-ssh/psp-ssh
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.0047563Z Deleting the contents of '/home/runner/work/psp-ssh/psp-ssh'
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.0050553Z ##[group]Initializing the repository
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.0054116Z [command]/usr/bin/git init /home/runner/work/psp-ssh/psp-ssh
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.0131717Z hint: Using 'master' as the name for the initial branch. This default branch name
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.0133306Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.0134418Z hint: to use in all of your new repositories, which will suppress this warning,
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.0135383Z hint: call:
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.0135703Z hint:
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.0136110Z hint: 	git config --global init.defaultBranch <name>
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.0136587Z hint:
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.0137041Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.0137776Z hint: 'development'. The just-created branch can be renamed via this command:
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.0138360Z hint:
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.0138688Z hint: 	git branch -m <name>
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.0139062Z hint:
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.0139542Z hint: Disable this message with "git config set advice.defaultBranchName false"
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.0140530Z Initialized empty Git repository in /home/runner/work/psp-ssh/psp-ssh/.git/
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.0150467Z [command]/usr/bin/git remote add origin https://github.com/abduznik/psp-ssh
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.0186078Z ##[endgroup]
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.0186925Z ##[group]Disabling automatic garbage collection
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.0189025Z [command]/usr/bin/git config --local gc.auto 0
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.0216311Z ##[endgroup]
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.0217072Z ##[group]Setting up auth
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.0222459Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.0253734Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.0549361Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.0583105Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.0779898Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.0810467Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.0996523Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.1042979Z ##[endgroup]
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.1043833Z ##[group]Fetching the repository
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.1050706Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +025431980bb7dcab6850e5a68cb19c26d3b0ed1c:refs/remotes/origin/master
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.6026499Z From https://github.com/abduznik/psp-ssh
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.6027677Z  * [new ref]         025431980bb7dcab6850e5a68cb19c26d3b0ed1c -> origin/master
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.6032048Z ##[endgroup]
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.6032770Z ##[group]Determining the checkout info
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.6035231Z ##[endgroup]
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.6043598Z [command]/usr/bin/git sparse-checkout disable
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.6088548Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.6118991Z ##[group]Checking out the ref
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.6120247Z [command]/usr/bin/git checkout --progress --force -B master refs/remotes/origin/master
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.6200032Z Reset branch 'master'
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.6203790Z branch 'master' set up to track 'origin/master'.
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.6208778Z ##[endgroup]
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.6245009Z [command]/usr/bin/git log -1 --format=%H
+integration	Run actions/checkout@v4	2026-08-31T10:01:27.6267861Z 025431980bb7dcab6850e5a68cb19c26d3b0ed1c
+integration	Install & configure real sshd	‹¯¨2026-08-31T10:01:27.6459771Z ##[group]Run bash test/setup_sshd.sh
+integration	Install & configure real sshd	2026-08-31T10:01:27.6460448Z [36;1mbash test/setup_sshd.sh[0m
+integration	Install & configure real sshd	2026-08-31T10:01:27.6497904Z shell: /usr/bin/bash -e {0}
+integration	Install & configure real sshd	2026-08-31T10:01:27.6498377Z ##[endgroup]
+integration	Install & configure real sshd	2026-08-31T10:03:19.5222668Z /etc/ssh/ssh_host_ed25519_key already exists.
+integration	Install & configure real sshd	2026-08-31T10:03:19.6513109Z Overwrite (y/n)? sshd ready on 2222
+integration	Run the real client against real sshd	‹¯¨2026-08-31T10:03:19.6561712Z ##[group]Run make test-integration
+integration	Run the real client against real sshd	2026-08-31T10:03:19.6561998Z [36;1mmake test-integration[0m
+integration	Run the real client against real sshd	2026-08-31T10:03:19.6596502Z shell: /usr/bin/bash -e {0}
+integration	Run the real client against real sshd	2026-08-31T10:03:19.6596724Z env:
+integration	Run the real client against real sshd	2026-08-31T10:03:19.6596895Z   SSH_TEST_HOST: 127.0.0.1
+integration	Run the real client against real sshd	2026-08-31T10:03:19.6597091Z   SSH_TEST_PORT: 2222
+integration	Run the real client against real sshd	2026-08-31T10:03:19.6597271Z   SSH_TEST_USER: sshuser
+integration	Run the real client against real sshd	2026-08-31T10:03:19.6597466Z   SSH_TEST_PASS: pspsshpass
+integration	Run the real client against real sshd	2026-08-31T10:03:19.6597654Z   PSPSH_DEBUG: 1
+integration	Run the real client against real sshd	2026-08-31T10:03:19.6597844Z ##[endgroup]
+integration	Run the real client against real sshd	2026-08-31T10:03:19.6813974Z Note: PSP SDK not found ƒ?" building host test targets only
+integration	Run the real client against real sshd	2026-08-31T10:03:19.6823091Z cc -Isrc -Isrc/crypto -Isrc/ssh -O2 -Wall   -c -o src/ssh/net_host.o src/ssh/net_host.c
+integration	Run the real client against real sshd	2026-08-31T10:03:20.8180746Z cc -Isrc -Isrc/crypto -Isrc/ssh -O2 -Wall   -c -o src/ssh/transport.o src/ssh/transport.c
+integration	Run the real client against real sshd	2026-08-31T10:03:20.8595800Z src/ssh/transport.c: In function ƒ?~sshe_tx_recv_packetƒ?T:
+integration	Run the real client against real sshd	2026-08-31T10:03:20.8596744Z src/ssh/transport.c:183:19: warning: unused variable ƒ?~macƒ?T [-Wunused-variable]
+integration	Run the real client against real sshd	2026-08-31T10:03:20.8597456Z   183 |     unsigned char mac[SSH_MAC_LEN];
+integration	Run the real client against real sshd	2026-08-31T10:03:20.8597833Z       |                   ^~~
+integration	Run the real client against real sshd	2026-08-31T10:03:21.1188632Z cc -Isrc -Isrc/crypto -Isrc/ssh -O2 -Wall   -c -o src/ssh/client.o src/ssh/client.c
+integration	Run the real client against real sshd	2026-08-31T10:03:21.1428292Z src/ssh/client.c: In function ƒ?~expect_msgƒ?T:
+integration	Run the real client against real sshd	2026-08-31T10:03:21.1502450Z src/ssh/client.c:78:33: warning: passing argument 1 of ƒ?~sshe_buf_get_u8ƒ?T from incompatible pointer type [-Wincompatible-pointer-types]
+integration	Run the real client against real sshd	2026-08-31T10:03:21.1503046Z    78 |             if (sshe_buf_get_u8(&out, &typ) == 0 &&
+integration	Run the real client against real sshd	2026-08-31T10:03:21.1503326Z       |                                 ^~~~
+integration	Run the real client against real sshd	2026-08-31T10:03:21.1503579Z       |                                 |
+integration	Run the real client against real sshd	2026-08-31T10:03:21.1503811Z       |                                 sshe_buf **
+integration	Run the real client against real sshd	2026-08-31T10:03:21.1504290Z In file included from src/ssh/transport.h:11,
+integration	Run the real client against real sshd	2026-08-31T10:03:21.1504778Z                  from src/ssh/client.h:7,
+integration	Run the real client against real sshd	2026-08-31T10:03:21.1505277Z                  from src/ssh/client.c:12:
+integration	Run the real client against real sshd	2026-08-31T10:03:21.1506005Z src/ssh/buf.h:28:33: note: expected ƒ?~sshe_buf *ƒ?T but argument is of type ƒ?~sshe_buf **ƒ?T
+integration	Run the real client against real sshd	2026-08-31T10:03:21.1506543Z    28 | int   sshe_buf_get_u8(sshe_buf *b, uint8_t *v);
+integration	Run the real client against real sshd	2026-08-31T10:03:21.1506985Z       |                       ~~~~~~~~~~^
+integration	Run the real client against real sshd	2026-08-31T10:03:21.1507815Z src/ssh/client.c:79:34: warning: passing argument 1 of ƒ?~sshe_buf_get_strƒ?T from incompatible pointer type [-Wincompatible-pointer-types]
+integration	Run the real client against real sshd	2026-08-31T10:03:21.1508496Z    79 |                 sshe_buf_get_str(&out, &nm, &nmlen) == 0 &&
+integration	Run the real client against real sshd	2026-08-31T10:03:21.1509024Z       |                                  ^~~~
+integration	Run the real client against real sshd	2026-08-31T10:03:21.1509445Z       |                                  |
+integration	Run the real client against real sshd	2026-08-31T10:03:21.1509999Z       |                                  sshe_buf **
+integration	Run the real client against real sshd	2026-08-31T10:03:21.1510731Z src/ssh/buf.h:31:34: note: expected ƒ?~sshe_buf *ƒ?T but argument is of type ƒ?~sshe_buf **ƒ?T
+integration	Run the real client against real sshd	2026-08-31T10:03:21.1511370Z    31 | int   sshe_buf_get_str(sshe_buf *b, const unsigned char **p, size_t *n);
+integration	Run the real client against real sshd	2026-08-31T10:03:21.1511894Z       |                        ~~~~~~~~~~^
+integration	Run the real client against real sshd	2026-08-31T10:03:21.1512787Z src/ssh/client.c:80:33: warning: passing argument 1 of ƒ?~sshe_buf_get_u8ƒ?T from incompatible pointer type [-Wincompatible-pointer-types]
+integration	Run the real client against real sshd	2026-08-31T10:03:21.1513462Z    80 |                 sshe_buf_get_u8(&out, &want_reply) == 0 && want_reply) {
+integration	Run the real client against real sshd	2026-08-31T10:03:21.1513944Z       |                                 ^~~~
+integration	Run the real client against real sshd	2026-08-31T10:03:21.1514436Z       |                                 |
+integration	Run the real client against real sshd	2026-08-31T10:03:21.1514913Z       |                                 sshe_buf **
+integration	Run the real client against real sshd	2026-08-31T10:03:21.1515604Z src/ssh/buf.h:28:33: note: expected ƒ?~sshe_buf *ƒ?T but argument is of type ƒ?~sshe_buf **ƒ?T
+integration	Run the real client against real sshd	2026-08-31T10:03:21.1516106Z    28 | int   sshe_buf_get_u8(sshe_buf *b, uint8_t *v);
+integration	Run the real client against real sshd	2026-08-31T10:03:21.1516551Z       |                       ~~~~~~~~~~^
+integration	Run the real client against real sshd	2026-08-31T10:03:21.1517411Z src/ssh/client.c:80:39: warning: passing argument 2 of ƒ?~sshe_buf_get_u8ƒ?T from incompatible pointer type [-Wincompatible-pointer-types]
+integration	Run the real client against real sshd	2026-08-31T10:03:21.1518408Z    80 |                 sshe_buf_get_u8(&out, &want_reply) == 0 && want_reply) {
+integration	Run the real client against real sshd	2026-08-31T10:03:21.1519102Z       |                                       ^~~~~~~~~~~
+integration	Run the real client against real sshd	2026-08-31T10:03:21.1519542Z       |                                       |
+integration	Run the real client against real sshd	2026-08-31T10:03:21.1520225Z       |                                       unsigned int *
+integration	Run the real client against real sshd	2026-08-31T10:03:21.1521048Z src/ssh/buf.h:28:45: note: expected ƒ?~uint8_t *ƒ?T {aka ƒ?~unsigned char *ƒ?T} but argument is of type ƒ?~unsigned int *ƒ?T
+integration	Run the real client against real sshd	2026-08-31T10:03:21.1521662Z    28 | int   sshe_buf_get_u8(sshe_buf *b, uint8_t *v);
+integration	Run the real client against real sshd	2026-08-31T10:03:21.1522119Z       |                                    ~~~~~~~~~^
+integration	Run the real client against real sshd	2026-08-31T10:03:21.2415639Z cc -Isrc -Isrc/crypto -Isrc/ssh -O2 -Wall   -c -o src/ssh/buf.o src/ssh/buf.c
+integration	Run the real client against real sshd	2026-08-31T10:03:21.3122287Z cc -Isrc -Isrc/crypto -Isrc/ssh -O2 -Wall   -c -o src/crypto/sshcrypto.o src/crypto/sshcrypto.c
+integration	Run the real client against real sshd	2026-08-31T10:03:21.3203138Z src/crypto/sshcrypto.c: In function ƒ?~hmac_blockƒ?T:
+integration	Run the real client against real sshd	2026-08-31T10:03:21.3204132Z src/crypto/sshcrypto.c:34:13: warning: unused variable ƒ?~bufƒ?T [-Wunused-variable]
+integration	Run the real client against real sshd	2026-08-31T10:03:21.3204688Z    34 |     uint8_t buf[64];
+integration	Run the real client against real sshd	2026-08-31T10:03:21.3204974Z       |             ^~~
+integration	Run the real client against real sshd	2026-08-31T10:03:21.3205492Z src/crypto/sshcrypto.c:33:13: warning: unused variable ƒ?~digestƒ?T [-Wunused-variable]
+integration	Run the real client against real sshd	2026-08-31T10:03:21.3205923Z    33 |     uint8_t digest[32];
+integration	Run the real client against real sshd	2026-08-31T10:03:21.3206120Z       |             ^~~~~~
+integration	Run the real client against real sshd	2026-08-31T10:03:21.3662745Z cc -Isrc -Isrc/crypto -Isrc/ssh -O2 -Wall   -c -o src/crypto/tweetnacl.o src/crypto/tweetnacl.c
+integration	Run the real client against real sshd	2026-08-31T10:03:21.7945563Z cc -Isrc -Isrc/crypto -Isrc/ssh -O2 -Wall   -c -o src/crypto/aes.o src/crypto/aes.c
+integration	Run the real client against real sshd	2026-08-31T10:03:21.8853036Z cc -Isrc -Isrc/crypto -Isrc/ssh -O2 -Wall   -c -o src/crypto/sha256.o src/crypto/sha256.c
+integration	Run the real client against real sshd	2026-08-31T10:03:21.9492656Z cc -Isrc -Isrc/crypto -Isrc/ssh -O2 -Wall   -c -o src/crypto/sha1.o src/crypto/sha1.c
+integration	Run the real client against real sshd	2026-08-31T10:03:22.0005632Z cc -Isrc -Isrc/crypto -Isrc/ssh -o test/test_integration test/test_integration.c src/ssh/net_host.o src/ssh/transport.o src/ssh/client.o src/ssh/buf.o src/crypto/sshcrypto.o src/crypto/tweetnacl.o src/crypto/aes.o src/crypto/sha256.o src/crypto/sha1.o
+integration	Run the real client against real sshd	2026-08-31T10:03:22.1370868Z ./test/test_integration
+integration	Run the real client against real sshd	2026-08-31T10:03:22.1484505Z [pspssh] sent ident SSH-2.0-PSPSSH_0.1[pspssh] server ident: SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.18
+integration	Run the real client against real sshd	2026-08-31T10:03:22.1485368Z [pspssh] kexinit sent (173 bytes)
+integration	Run the real client against real sshd	2026-08-31T10:03:22.1493689Z [pspssh] server kexinit recv r=20
+integration	Run the real client against real sshd	2026-08-31T10:03:22.1494316Z [pspssh] alg check ok
+integration	Run the real client against real sshd	2026-08-31T10:03:22.1503405Z [pspssh] ecdh init sent
+integration	Run the real client against real sshd	2026-08-31T10:03:22.1532214Z [pspssh] ecdh reply r=31
+integration	Run the real client against real sshd	2026-08-31T10:03:22.1565321Z [pspssh] host key verified (ed25519)
+integration	Run the real client against real sshd	2026-08-31T10:03:22.2737801Z [pspssh] expect 91: got 80 (len 603)
+integration	Run the real client against real sshd	2026-08-31T10:03:22.2738512Z [pspssh] 50 [pspssh] 00 [pspssh] 00 [pspssh] 00 [pspssh] 17 [pspssh] 68 [pspssh] 6f [pspssh] 73 [pspssh] 74 [pspssh] 6b [pspssh] 65 [pspssh] 79 [pspssh] 73 [pspssh] 2d [pspssh] 30 [pspssh] 30 [pspssh] 
+integration	Run the real client against real sshd	2026-08-31T10:03:22.2739402Z [pspssh] 40 [pspssh] 6f [pspssh] 70 [pspssh] 65 [pspssh] 6e [pspssh] 73 [pspssh] 73 [pspssh] 68 [pspssh] 2e [pspssh] 63 [pspssh] 6f [pspssh] 6d [pspssh] 00 [pspssh] 00 [pspssh] 00 [pspssh] 01 [pspssh] 
+integration	Run the real client against real sshd	2026-08-31T10:03:22.2740101Z [pspssh] 
+integration	Run the real client against real sshd	2026-08-31T10:03:22.3148592Z session failed
+integration	Run the real client against real sshd	2026-08-31T10:03:22.3152789Z make: *** [Makefile:60: test-integration] Error 1
+integration	Run the real client against real sshd	2026-08-31T10:03:22.3153283Z server: SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.18
+integration	Run the real client against real sshd	2026-08-31T10:03:22.3191384Z ##[error]Process completed with exit code 2.
+integration	Post Run actions/checkout@v4	‹¯¨2026-08-31T10:03:22.3365696Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+integration	Post Run actions/checkout@v4	2026-08-31T10:03:22.3367108Z Post job cleanup.
+integration	Post Run actions/checkout@v4	2026-08-31T10:03:22.4049395Z [command]/usr/bin/git version
+integration	Post Run actions/checkout@v4	2026-08-31T10:03:22.4085623Z git version 2.55.0
+integration	Post Run actions/checkout@v4	2026-08-31T10:03:22.4119890Z Temporarily overriding HOME='/home/runner/work/_temp/1a236379-e2fe-4e1b-a555-76e36670e729' before making global git config changes
+integration	Post Run actions/checkout@v4	2026-08-31T10:03:22.4120859Z Adding repository directory to the temporary git global config as a safe directory
+integration	Post Run actions/checkout@v4	2026-08-31T10:03:22.4126208Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/psp-ssh/psp-ssh
+integration	Post Run actions/checkout@v4	2026-08-31T10:03:22.4160365Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+integration	Post Run actions/checkout@v4	2026-08-31T10:03:22.4191010Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+integration	Post Run actions/checkout@v4	2026-08-31T10:03:22.4408885Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+integration	Post Run actions/checkout@v4	2026-08-31T10:03:22.4432767Z http.https://github.com/.extraheader
+integration	Post Run actions/checkout@v4	2026-08-31T10:03:22.4442576Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+integration	Post Run actions/checkout@v4	2026-08-31T10:03:22.4476043Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+integration	Post Run actions/checkout@v4	2026-08-31T10:03:22.4719839Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+integration	Post Run actions/checkout@v4	2026-08-31T10:03:22.4752775Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+integration	Complete job	‹¯¨2026-08-31T10:03:22.5091833Z Cleaning up orphan processes
+integration	Complete job	2026-08-31T10:03:22.5351548Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+
