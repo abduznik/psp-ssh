@@ -29,8 +29,9 @@ HOST_OBJS := $(SRC_DIR)/ssh/net_host.o \
 
 INCDIR := $(SRC_DIR) $(SRC_DIR)/crypto $(SRC_DIR)/ssh
 
-# host build flags (PSP build.mak adds its own from INCDIR)
+# host build flags (PSP build.mak overrides CFLAGS when SDK present)
 HOST_CFLAGS := -Isrc -Isrc/crypto -Isrc/ssh
+CFLAGS := $(HOST_CFLAGS) -O2 -Wall
 
 ifeq ($(shell psp-config --psp-prefix 2>/dev/null),)
     $(info Note: PSP SDK not found — building host test targets only)
