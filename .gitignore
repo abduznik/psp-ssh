@@ -8,6 +8,7 @@ PSPSH/
 test/test_crypto
 test/test_integration
 test/test_crypto_local.exe
+test/test_integration_local.exe
 test/stub_net.c
 .PSPSDK
 *.zip
