@@ -4,17 +4,17 @@ TARGET   := PSPSH
 BUILD_DIR := build
 SRC_DIR  := src
 
-# PSP build objects
-PSP_OBJS := $(SRC_DIR)/app/main.o \
-            $(SRC_DIR)/ssh/net_psp.o \
-            $(SRC_DIR)/ssh/transport.o \
-            $(SRC_DIR)/ssh/client.o \
-            $(SRC_DIR)/ssh/buf.o \
-            $(SRC_DIR)/crypto/sshcrypto.o \
-            $(SRC_DIR)/crypto/tweetnacl.o \
-            $(SRC_DIR)/crypto/aes.o \
-            $(SRC_DIR)/crypto/sha256.o \
-            $(SRC_DIR)/crypto/sha1.o
+# PSP build objects (build.mak expects OBJS)
+OBJS := $(SRC_DIR)/app/main.o \
+        $(SRC_DIR)/ssh/net_psp.o \
+        $(SRC_DIR)/ssh/transport.o \
+        $(SRC_DIR)/ssh/client.o \
+        $(SRC_DIR)/ssh/buf.o \
+        $(SRC_DIR)/crypto/sshcrypto.o \
+        $(SRC_DIR)/crypto/tweetnacl.o \
+        $(SRC_DIR)/crypto/aes.o \
+        $(SRC_DIR)/crypto/sha256.o \
+        $(SRC_DIR)/crypto/sha1.o
 
 # Host objects (everything except the PSP net backend + app)
 HOST_OBJS := $(SRC_DIR)/ssh/net_host.o \
@@ -40,6 +40,8 @@ else
 endif
 
 # ── Host unit tests: crypto vectors ──
+# NOTE: 'all' is NOT overridden here — the PSP build.mak defines it.
+# On hosts without the PSP SDK we expose the test targets only.
 .PHONY: test test-integration pack
 test: test/test_crypto
 	./test/test_crypto
@@ -70,7 +72,8 @@ pack: all
 	cd $(BUILD_DIR) && zip -r $(TARGET)-$(RELVER).zip $(TARGET)
 
 # host-side gcc parts still compile without psp-config:
-# (empty rule to let 'make' run from a fresh checkout without SDK)
+ifeq ($(shell psp-config --psp-prefix 2>/dev/null),)
 all:
 	@$(MAKE) -s test
-	@echo "NOTE: run 'make docker' to build the PSP EBOOT (requires Docker)"
+	@echo "NOTE: no PSP SDK — run 'make docker' to build the PSP EBOOT (requires Docker)"
+endif

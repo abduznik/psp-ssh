@@ -22,6 +22,37 @@
 #include "transport.h"
 #include "sshcrypto.h"
 
+/* debug trace: PSPSH_DEBUG=1 prints protocol events to stderr */
+static int dbg_on(void)
+{
+    static int v = -1;
+    if (v < 0) v = getenv("PSPSH_DEBUG") && getenv("PSPSH_DEBUG")[0] == '1';
+    return v;
+}
+#define DBG(...) do { if (dbg_on()) fprintf(stderr, "[pspssh] " __VA_ARGS__); } while (0)
+
+/* PSPSH_HASHDUMP=path dumps every exchange-hash ingredient as
+   length-prefixed hex lines for offline ground-truth verification. */
+static FILE *dump_fp(void)
+{
+    static FILE *f = NULL;
+    if (!f) {
+        const char *p = getenv("PSPSH_HASHDUMP");
+        if (p) f = fopen(p, "wb");
+    }
+    return f;
+}
+static void dump_tag(const char *tag, const void *data, size_t len)
+{
+    FILE *f = dump_fp();
+    size_t i;
+    if (!f) return;
+    fprintf(f, "%s %zu ", tag, len);
+    for (i = 0; i < len; i++)
+        fprintf(f, "%02x", ((const unsigned char *)data)[i]);
+    fprintf(f, "\n");
+}
+
 /* SSH message numbers */
 #define MSG_DISCONNECT       1
 #define MSG_IGNORE           2
@@ -159,21 +190,24 @@ int sshe_tx_recv_packet(sshe_tx *t, sshe_buf *out)
     out->pos = 0;
     out->len = 0;
 
-    if (raw_recv(t, first, 16) != 0) return -1;
+    if (raw_recv(t, first, 16) != 0) { DBG("recv: first16 failed\n"); return -1; }
     if (t->s2c.enc) {
         ssh_aes128_ctr_crypt(t->s2c.key, t->s2c.iv, first, first, 16);
     }
 
     packet_len = ((uint32_t)first[0] << 24) | ((uint32_t)first[1] << 16) |
                  ((uint32_t)first[2] << 8) | (uint32_t)first[3];
-    if (packet_len < 4 || packet_len > 35000) return -1;
+    if (packet_len < 4 || packet_len > 35000) {
+        DBG("recv: bad packet_len %u\n", packet_len);
+        return -1;
+    }
 
     enc_total = (size_t)packet_len + 4;
     rest = enc_total - 16;
 
     body = (unsigned char *)malloc(rest ? rest : 1);
     if (!body) return -1;
-    if (raw_recv(t, body, rest) != 0) { free(body); return -1; }
+    if (raw_recv(t, body, rest) != 0) { DBG("recv: body failed\n"); free(body); return -1; }
     if (t->s2c.enc) {
         ssh_aes128_ctr_crypt(t->s2c.key, t->s2c.iv, body, body, rest);
     }
@@ -198,13 +232,22 @@ int sshe_tx_recv_packet(sshe_tx *t, sshe_buf *out)
                             mac_calc);
             sshe_buf_free(&mb);
         }
-        if (memcmp(mac, mac_calc, SSH_MAC_LEN) != 0) { free(body); return -1; }
+        if (memcmp(mac, mac_calc, SSH_MAC_LEN) != 0) {
+            DBG("recv: MAC mismatch\n");
+            free(body);
+            return -1;
+        }
     } else {
         t->s2c.seq++;
     }
 
     /* payload = bytes after [len(4)][padlen(1)] */
     pad_len = first[4];
+    if (pad_len == 0 || pad_len > 255 || packet_len < 1 + pad_len) {
+        DBG("recv: bad pad_len %u\n", pad_len);
+        free(body);
+        return -1;
+    }
     pay_len = (size_t)packet_len - 1 - pad_len;
     if (pay_len <= 16 - 5) {
         sshe_buf_raw(out, first + 5, pay_len);
@@ -290,39 +333,63 @@ static int check_server_algs(const unsigned char *p, size_t len)
     return 0;
 }
 
-/* derive one key: K = HASH(K_shared || H || X || session_id),
-   extended by appending sequence counters (RFC 4253 §7.2) */
-static void derive_key(const uint8_t k_shared[32], const uint8_t h[32],
-                       char x, const uint8_t sid[32],
+/* derive one key — RFC 4253 §7.2, OpenSSH kex.c derive_key():
+   K1 = HASH(K || H || X || session_id)
+   Kn = HASH(K || H || K1 || ... || Kn-1)   (chained, NO counter)
+   K is the bignum2 buffer: u32 length + mpint bytes (OpenSSH's
+   sshbuf_put_bignum2_bytes) — the same encoding hashed in the
+   exchange hash. */
+static size_t mpint_encode(unsigned char *out, const uint8_t *in32)
+{
+    size_t start = 0, len;
+
+    while (start < 32 && in32[start] == 0) start++;
+    if (start == 32) { out[0] = 0; return 1; }
+    len = 32 - start;
+    if (in32[start] & 0x80) {
+        out[0] = 0;
+        memcpy(out + 1, in32 + start, len);
+        return len + 1;
+    }
+    memcpy(out, in32 + start, len);
+    return len;
+}
+
+static void derive_key(const uint8_t k_mp[/*up to 33*/], size_t k_len,
+                       const uint8_t h[32], char x, const uint8_t sid[32],
                        uint8_t *out, size_t out_len)
 {
-    uint8_t block[64 + 1 + 32 + 4];
+    uint8_t k_str[4 + 33];      /* u32 len + mpint */
+    uint8_t k_str_len;
+    uint8_t digest[32];
     size_t got = 0;
-    uint32_t ctr = 0;
-    size_t base_len;
 
-    memcpy(block, k_shared, 32);
-    memcpy(block + 32, h, 32);
-    block[64] = (uint8_t)x;
-    memcpy(block + 65, sid, 32);
-    base_len = 65 + 32;
+    k_str[0] = (uint8_t)(k_len >> 24);
+    k_str[1] = (uint8_t)(k_len >> 16);
+    k_str[2] = (uint8_t)(k_len >> 8);
+    k_str[3] = (uint8_t)k_len;
+    memcpy(k_str + 4, k_mp, k_len);
+    k_str_len = (uint8_t)(4 + k_len);
 
     while (got < out_len) {
-        uint8_t digest[32];
-        uint8_t extended[base_len + 4];
-        memcpy(extended, block, base_len);
-        extended[base_len] = (uint8_t)(ctr >> 24);
-        extended[base_len + 1] = (uint8_t)(ctr >> 16);
-        extended[base_len + 2] = (uint8_t)(ctr >> 8);
-        extended[base_len + 3] = (uint8_t)ctr;
-        ssh_sha256(extended, base_len + 4, digest);
-        {
-            size_t take = out_len - got;
-            if (take > 32) take = 32;
-            memcpy(out + got, digest, take);
-            got += take;
+        sshe_buf hb = {0};
+        uint8_t take;
+
+        sshe_buf_raw(&hb, k_str, k_str_len);
+        sshe_buf_raw(&hb, h, 32);
+        sshe_buf_raw(&hb, &x, 1);
+        if (got == 0) {
+            sshe_buf_raw(&hb, sid, 32);
+        } else {
+            sshe_buf_raw(&hb, digest, 32);
         }
-        ctr++;
+        ssh_sha256(hb.data, hb.len, digest);
+        sshe_buf_free(&hb);
+
+        take = (uint8_t)(out_len - got);
+        if (take > 32) take = 32;
+        memcpy(out + got, digest, take);
+        got += take;
     }
 }
 
@@ -339,6 +406,7 @@ int sshe_tx_handshake(sshe_tx *t, const char *client_id)
     /* ---- 1. identification exchange ---- */
     snprintf(idline, sizeof(idline), "%s\r\n", client_id);
     if (raw_send(t, idline, strlen(idline)) != 0) return -1;
+    DBG("sent ident %s", client_id);
 
     li = 0;
     do {
@@ -346,6 +414,7 @@ int sshe_tx_handshake(sshe_tx *t, const char *client_id)
     } while (idline[li++] != '\n' && li < sizeof(idline) - 1);
     while (li && (idline[li-1] == '\n' || idline[li-1] == '\r')) idline[--li] = 0;
     memcpy(t->server_id, idline, li + 1);
+    DBG("server ident: %s\n", t->server_id);
 
     /* ---- 2. KEXINIT exchange ---- */
     sshe_random_fill(cookie, 16);
@@ -357,18 +426,24 @@ int sshe_tx_handshake(sshe_tx *t, const char *client_id)
     add_namelist(&kexinit, cipher_algs);
     add_namelist(&kexinit, mac_algs);
     add_namelist(&kexinit, mac_algs);
-    sshe_buf_u32(&kexinit, 0);   /* compression c2s */
-    sshe_buf_u32(&kexinit, 0);   /* compression s2c */
+    sshe_buf_str(&kexinit, "none", 4); /* compression c2s — MUST offer none */
+    sshe_buf_str(&kexinit, "none", 4); /* compression s2c */
     sshe_buf_u32(&kexinit, 0);   /* langs c2s */
     sshe_buf_u32(&kexinit, 0);   /* langs s2c */
     sshe_buf_u8(&kexinit, 0);    /* first_kex_packet_follows */
     sshe_buf_u32(&kexinit, 0);   /* reserved */
+    DBG("kexinit sent (%d bytes)\n", (int)kexinit.len);
 
     if (sshe_tx_send_payload(t, &kexinit) != 0) return -1;
 
     r = sshe_tx_recv_packet(t, &server_kex);
+    DBG("server kexinit recv r=%d\n", r);
     if (r != MSG_KEXINIT) return -1;
-    if (check_server_algs(server_kex.data, server_kex.len) != 0) return -1;
+    if (check_server_algs(server_kex.data, server_kex.len) != 0) {
+        DBG("alg check failed\n");
+        return -1;
+    }
+    DBG("alg check ok\n");
 
     /* ---- 3. ECDH (curve25519) ---- */
     {
@@ -383,14 +458,17 @@ int sshe_tx_handshake(sshe_tx *t, const char *client_id)
         eph_sec[31] &= 127;
         eph_sec[31] |= 64;
         if (ssh_x25519(qc, eph_sec, base) != 0) return -1;
+        dump_tag("EPH", eph_sec, 32);
 
         packet.len = 0; packet.pos = 0;
         sshe_buf_u8(&packet, MSG_KEX_ECDH_INIT);
         sshe_buf_str(&packet, qc, 32);
         if (sshe_tx_send_payload(t, &packet) != 0) return -1;
+        DBG("ecdh init sent\n");
 
         packet.len = 0; packet.pos = 0;
         r = sshe_tx_recv_packet(t, &packet);
+        DBG("ecdh reply r=%d\n", r);
         if (r != MSG_KEX_ECDH_REPLY) return -1;
 
         {
@@ -411,19 +489,37 @@ int sshe_tx_handshake(sshe_tx *t, const char *client_id)
             memcpy(eph_sec2, eph_sec, 32);
             if (ssh_x25519(K, eph_sec2, qs) != 0) return -1;
 
-            /* exchange hash */
+            /* exchange hash — RFC 4253 §7.2 / RFC 8731.
+               OpenSSH kexgen.c kex_gen_hash(): EVERY component is a
+               string; I_C/I_S are the full KEXINIT payloads (incl.
+               type byte); K is the bignum2 buffer hashed as-is —
+               which is u32 length + mpint bytes (the shared_secret
+               sshbuf produced by kexc25519_shared_key_ext). */
             {
+                unsigned char k_mp[33];
+                size_t k_len = mpint_encode(k_mp, K);
+                size_t vc_len = strlen(client_id);
+                size_t vs_len = strlen(t->server_id);
                 sshe_buf hb = {0};
-                sshe_buf_raw(&hb, client_id, strlen(client_id));
-                sshe_buf_raw(&hb, t->server_id, strlen(t->server_id));
+                sshe_buf_u32(&hb, (uint32_t)vc_len);
+                sshe_buf_raw(&hb, client_id, vc_len);
+                sshe_buf_u32(&hb, (uint32_t)vs_len);
+                sshe_buf_raw(&hb, t->server_id, vs_len);
+                sshe_buf_u32(&hb, (uint32_t)kexinit.len);
                 sshe_buf_raw(&hb, kexinit.data, kexinit.len);
+                sshe_buf_u32(&hb, (uint32_t)server_kex.len);
                 sshe_buf_raw(&hb, server_kex.data, server_kex.len);
+                sshe_buf_u32(&hb, (uint32_t)ks_len);
                 sshe_buf_raw(&hb, ks, ks_len);
+                sshe_buf_u32(&hb, 32);
                 sshe_buf_raw(&hb, qc, 32);
+                sshe_buf_u32(&hb, (uint32_t)qs_len);
                 sshe_buf_raw(&hb, qs, qs_len);
-                sshe_buf_raw(&hb, K, 32);
+                sshe_buf_u32(&hb, (uint32_t)k_len);
+                sshe_buf_raw(&hb, k_mp, k_len);
                 ssh_sha256(hb.data, hb.len, H);
                 sshe_buf_free(&hb);
+                dump_tag("H", H, 32);
             }
 
             /* parse and verify host key signature */
@@ -455,9 +551,21 @@ int sshe_tx_handshake(sshe_tx *t, const char *client_id)
                 memcpy(sig_bytes, rawsig, 64);
                 sshe_buf_free(&kb);
 
+                dump_tag("SIG", sig_bytes, 64);
+                dump_tag("PK", host_pk, 32);
+
                 if (ssh_ed25519_verify(sig_bytes, H, 32, host_pk) != 0) {
+                    DBG("host key sig verify FAILED\n");
+                    DBG("H: ");
+                    for (i = 0; i < 32; i++) DBG("%02x", H[i]);
+                    DBG("\nsig: ");
+                    for (i = 0; i < 64; i++) DBG("%02x", sig_bytes[i]);
+                    DBG("\npk:  ");
+                    for (i = 0; i < 32; i++) DBG("%02x", host_pk[i]);
+                    DBG("\n");
                     return -1; /* host key signature invalid */
                 }
+                DBG("host key verified (ed25519)\n");
                 memcpy(t->server_pk, host_pk, 32);
                 t->have_server_pk = 1;
             }
@@ -469,12 +577,16 @@ int sshe_tx_handshake(sshe_tx *t, const char *client_id)
             }
 
             /* derive IVs, keys, mac keys */
-            derive_key(K, H, 'A', t->session_id, t->c2s.iv, SSH_IV_LEN);
-            derive_key(K, H, 'B', t->session_id, t->s2c.iv, SSH_IV_LEN);
-            derive_key(K, H, 'C', t->session_id, t->c2s.key, SSH_KEY_LEN);
-            derive_key(K, H, 'D', t->session_id, t->s2c.key, SSH_KEY_LEN);
-            derive_key(K, H, 'E', t->session_id, t->c2s.mac_key, SSH_MAC_LEN);
-            derive_key(K, H, 'F', t->session_id, t->s2c.mac_key, SSH_MAC_LEN);
+            {
+                unsigned char k_mp[33];
+                size_t k_len = mpint_encode(k_mp, K);
+                derive_key(k_mp, k_len, H, 'A', t->session_id, t->c2s.iv, SSH_IV_LEN);
+                derive_key(k_mp, k_len, H, 'B', t->session_id, t->s2c.iv, SSH_IV_LEN);
+                derive_key(k_mp, k_len, H, 'C', t->session_id, t->c2s.key, SSH_KEY_LEN);
+                derive_key(k_mp, k_len, H, 'D', t->session_id, t->s2c.key, SSH_KEY_LEN);
+                derive_key(k_mp, k_len, H, 'E', t->session_id, t->c2s.mac_key, SSH_MAC_LEN);
+                derive_key(k_mp, k_len, H, 'F', t->session_id, t->s2c.mac_key, SSH_MAC_LEN);
+            }
         }
     }
 
