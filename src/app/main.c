@@ -166,11 +166,14 @@ static int init_net(void)
 {
     int err;
     if (load_net_modules() != 0) return -1;
-    err = sceNetInit(0x80000, 42, 0, 42, 0);
+    /* exact pspSdkInetInit() sequence from pspsdk's inethelper.c */
+    err = sceNetInit(0x20000, 0x20, 0x1000, 0x20, 0x1000);
     if (err != 0) { pspDebugScreenPrintf("sceNetInit: 0x%08X\n", err); return -1; }
     err = sceNetInetInit();
     if (err != 0) { pspDebugScreenPrintf("sceNetInetInit: 0x%08X\n", err); return -1; }
-    err = sceNetApctlInit(0x8000, 48);
+    err = sceNetResolverInit();
+    if (err != 0) { pspDebugScreenPrintf("sceNetResolverInit: 0x%08X\n", err); return -1; }
+    err = sceNetApctlInit(0x1600, 0x42);
     if (err != 0) { pspDebugScreenPrintf("sceNetApctlInit: 0x%08X\n", err); return -1; }
     return 0;
 }
@@ -180,11 +183,13 @@ static int init_net(void)
 static void net_info(void)
 {
     union SceNetApctlInfo info;
+    int err;
 
-    if (sceNetApctlGetInfo(PSP_NET_APCTL_INFO_IP, &info) == 0)
+    err = sceNetApctlGetInfo(PSP_NET_APCTL_INFO_IP, &info);
+    if (err == 0)
         pspDebugScreenPrintf("psp ip : %s\n", info.ip);
     else
-        pspDebugScreenPrintf("psp ip : (none)\n");
+        pspDebugScreenPrintf("psp ip : (getinfo %08X)\n", err);
     if (sceNetApctlGetInfo(PSP_NET_APCTL_INFO_SUBNETMASK, &info) == 0)
         pspDebugScreenPrintf("psp msk: %s\n", info.subNetMask);
     if (sceNetApctlGetInfo(PSP_NET_APCTL_INFO_GATEWAY, &info) == 0)
@@ -209,10 +214,19 @@ static int apctl_connect(void)
     int last = PSP_NET_APCTL_STATE_DISCONNECTED;
     int disconnected_ticks = 0;
     int i;
+    int state;
 
     if (!sceWlanDevIsPowerOn()) {
         pspDebugScreenPrintf("warn: wlan power off (switch?)\n");
         return -1;
+    }
+
+    /* If the XMB-side connection is still live, reuse it — forcing a
+       re-join here can drop a working WPA2 link. */
+    if (sceNetApctlGetState(&state) == 0 &&
+        state == PSP_NET_APCTL_STATE_GOT_IP) {
+        pspDebugScreenPrintf("wlan: already connected\n");
+        return 0;
     }
 
     if (sceNetApctlConnect(0) != 0) {
@@ -222,7 +236,6 @@ static int apctl_connect(void)
 
     pspDebugScreenPrintf("wlan: connecting...\n");
     for (i = 0; i < 100; i++) {             /* up to ~20 s */
-        int state;
         if (sceNetApctlGetState(&state) != 0) {
             pspDebugScreenPrintf("apctl getstate failed\n");
             return -1;
@@ -428,12 +441,12 @@ int main(void)
     if (init_net() != 0) {
         hold("net init failed");
     }
-    net_info();                 /* always: show PSP's IP before connect */
-    pspDebugScreenPrintf("------------------------\n");
+    pspDebugScreenPrintf("wlan: requesting connection...\n");
     if (apctl_connect() != 0) {
         hold("wlan connect failed");
     }
-    net_info();                 /* again after GOT_IP */
+    net_info();                 /* real IP — link is up now */
+    pspDebugScreenPrintf("------------------------\n");
 
     memset(&t, 0, sizeof(t));
     if (sshe_net_connect(&t.sock, cfg_host, cfg_port) != 0) {
