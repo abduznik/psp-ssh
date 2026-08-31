@@ -19,8 +19,6 @@
 #include <pspnet_apctl.h>
 #include <psputility.h>
 #include <pspwlan.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -144,20 +142,20 @@ static int init_net(void)
    and exposes guest-network isolation instantly. */
 static void net_info(void)
 {
-    struct in_addr ip, mask, gw;
-    unsigned int len = sizeof(ip);
+    union SceNetApctlInfo info;
 
-    if (sceNetApctlGetInfo(PSP_NET_APCTL_INFO_IP, &ip) == 0)
-        pspDebugScreenPrintf("psp ip : %s\n", inet_ntoa(ip));
+    if (sceNetApctlGetInfo(PSP_NET_APCTL_INFO_IP, &info) == 0)
+        pspDebugScreenPrintf("psp ip : %s\n", info.ip);
     else
         pspDebugScreenPrintf("psp ip : (none)\n");
-    if (sceNetApctlGetInfo(PSP_NET_APCTL_INFO_SUBNETMASK, &mask) == 0)
-        pspDebugScreenPrintf("psp msk: %s\n", inet_ntoa(mask));
-    if (sceNetApctlGetInfo(PSP_NET_APCTL_INFO_GATEWAY, &gw) == 0)
-        pspDebugScreenPrintf("psp gw : %s\n", inet_ntoa(gw));
-    if (sceNetApctlGetInfo(PSP_NET_APCTL_INFO_SSID, &ip) == 0)
-        pspDebugScreenPrintf("psp ssid: %s\n", (char *)&ip);
-    (void)len;
+    if (sceNetApctlGetInfo(PSP_NET_APCTL_INFO_SUBNETMASK, &info) == 0)
+        pspDebugScreenPrintf("psp msk: %s\n", info.subNetMask);
+    if (sceNetApctlGetInfo(PSP_NET_APCTL_INFO_GATEWAY, &info) == 0)
+        pspDebugScreenPrintf("psp gw : %s\n", info.gateway);
+    if (sceNetApctlGetInfo(PSP_NET_APCTL_INFO_SSID, &info) == 0)
+        pspDebugScreenPrintf("psp ssid: %s\n", info.ssid);
+    if (sceNetApctlGetInfo(PSP_NET_APCTL_INFO_PRIMDNS, &info) == 0)
+        pspDebugScreenPrintf("psp dns : %s\n", info.primaryDns);
 }
 
 /* ── session output: render remote bytes to the debug screen,
