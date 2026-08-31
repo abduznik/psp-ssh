@@ -210,10 +210,8 @@ static int apctl_connect(void)
     int i;
 
     if (!sceWlanDevIsPowerOn()) {
-        if (sceWlanDevPowerOn() != 0) {
-            pspDebugScreenPrintf("wlan poweron failed\n");
-            return -1;
-        }
+        pspDebugScreenPrintf("warn: wlan power off (switch?)\n");
+        return -1;
     }
 
     if (sceNetApctlConnect(0) != 0) {
