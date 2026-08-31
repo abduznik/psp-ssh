@@ -10,6 +10,7 @@
 
 #include <pspkernel.h>
 #include <pspdisplay.h>
+#include <pspgu.h>
 #include <psputility.h>
 #include <psputility_osk.h>
 #include <psputility_sysparam.h>
@@ -19,6 +20,12 @@
 
 #define TEXT_LENGTH 128
 #define MAX_CHARS   126
+
+#define BUF_WIDTH   512
+#define SCR_WIDTH   480
+#define SCR_HEIGHT  272
+#define FRAME_SIZE  (BUF_WIDTH * SCR_HEIGHT * 4)
+static unsigned int __attribute__((aligned(16))) osk_list[262144];
 
 /* wide-char buffer helpers: ASCII <-> 16-bit */
 static void ascii_to_wide(unsigned short *w, const char *s)
@@ -85,7 +92,15 @@ int osk_input(const char *desc, const char *initial, char *out, int outlen)
         return 0;
 
     while (!done) {
-        sceDisplayWaitVblankStart();
+        /* pump a GU frame so the dialog's GE rendering reaches the
+           screen — the official sample's exact per-frame sequence */
+        sceGuStart(GU_DIRECT, osk_list);
+        sceGuClearColor(0);
+        sceGuClearDepth(0);
+        sceGuClear(GU_COLOR_BUFFER_BIT | GU_DEPTH_BUFFER_BIT);
+        sceGuFinish();
+        sceGuSync(GU_SYNC_FINISH, GU_SYNC_WHAT_DONE);
+
         status = sceUtilityOskGetStatus();
         switch (status) {
         case PSP_UTILITY_DIALOG_INIT:
@@ -103,7 +118,9 @@ int osk_input(const char *desc, const char *initial, char *out, int outlen)
             done = 1;
             break;
         }
+
         sceDisplayWaitVblankStart();
+        sceGuSwapBuffers();
     }
 
     if (data.result == PSP_UTILITY_OSK_RESULT_CHANGED) {

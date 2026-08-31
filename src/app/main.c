@@ -14,6 +14,7 @@
 #include <pspdebug.h>
 #include <pspctrl.h>
 #include <pspdisplay.h>
+#include <pspgu.h>
 #include <pspnet.h>
 #include <pspnet_inet.h>
 #include <pspnet_apctl.h>
@@ -33,6 +34,42 @@ PSP_MAIN_THREAD_ATTR(PSP_THREAD_ATTR_USER | PSP_THREAD_ATTR_VFPU);
 PSP_HEAP_SIZE_KB(8 * 1024);
 
 #define CONFIG "ms0:/PSP/SYSTEM/pspssh.cfg"
+
+/* GU setup for the utility dialogs (OSK). The OSK renders through
+   the graphics engine; without sceGuInit the dialog is invisible but
+   still accepts input — the classic "hidden keyboard" bug. This
+   mirrors the official PSPSDK OSK sample's setup exactly. */
+#define BUF_WIDTH   512
+#define SCR_WIDTH   480
+#define SCR_HEIGHT  272
+#define PIXEL_SIZE  4
+#define FRAME_SIZE  (BUF_WIDTH * SCR_HEIGHT * PIXEL_SIZE)
+static unsigned int __attribute__((aligned(16))) gu_list[262144];
+
+static void gu_init(void)
+{
+    sceGuInit();
+    sceGuStart(GU_DIRECT, gu_list);
+    sceGuDrawBuffer(GU_PSM_8888, (void *)0, BUF_WIDTH);
+    sceGuDispBuffer(SCR_WIDTH, SCR_HEIGHT, (void *)FRAME_SIZE, BUF_WIDTH);
+    sceGuDepthBuffer((void *)(FRAME_SIZE * 2), BUF_WIDTH);
+    sceGuOffset(2048 - (SCR_WIDTH / 2), 2048 - (SCR_HEIGHT / 2));
+    sceGuViewport(2048, 2048, SCR_WIDTH, SCR_HEIGHT);
+    sceGuDepthRange(0xc350, 0x2710);
+    sceGuScissor(0, 0, SCR_WIDTH, SCR_HEIGHT);
+    sceGuEnable(GU_SCISSOR_TEST);
+    sceGuDepthFunc(GU_GEQUAL);
+    sceGuEnable(GU_DEPTH_TEST);
+    sceGuFrontFace(GU_CW);
+    sceGuShadeModel(GU_FLAT);
+    sceGuEnable(GU_CULL_FACE);
+    sceGuEnable(GU_TEXTURE_2D);
+    sceGuEnable(GU_CLIP_PLANES);
+    sceGuFinish();
+    sceGuSync(GU_SYNC_FINISH, GU_SYNC_WHAT_DONE);
+    sceDisplayWaitVblankStart();
+    sceGuDisplay(GU_TRUE);
+}
 
 static char cfg_host[64] = "";
 static unsigned short cfg_port = 22;
@@ -156,6 +193,58 @@ static void net_info(void)
         pspDebugScreenPrintf("psp ssid: %s\n", info.ssid);
     if (sceNetApctlGetInfo(PSP_NET_APCTL_INFO_PRIMDNS, &info) == 0)
         pspDebugScreenPrintf("psp dns : %s\n", info.primaryDns);
+}
+
+/* Drive the WLAN association from inside the app. The XMB-side
+   connection does NOT survive into homebrew ("psp ip: (none)" on the
+   field test) — every homebrew must connect via sceNetApctlConnect(0)
+   (index 0 = the saved XMB profile) and wait for GOT_IP. Returns 0 on
+   success. */
+static int apctl_connect(void)
+{
+    const char *names[] = {
+        "DISCONNECTED", "SCANNING", "JOINING", "GETTING_IP",
+        "GOT_IP", "EAP_AUTH", "KEY_EXCHANGE"
+    };
+    int state = PSP_NET_APCTL_STATE_DISCONNECTED;
+    int i;
+
+    if (!sceWlanDevIsPowerOn()) {
+        if (sceWlanDevPowerOn() != 0) {
+            pspDebugScreenPrintf("wlan poweron failed\n");
+            return -1;
+        }
+    }
+
+    if (sceNetApctlConnect(0) != 0) {
+        pspDebugScreenPrintf("apctl connect failed\n");
+        return -1;
+    }
+
+    pspDebugScreenPrintf("wlan: connecting...\n");
+    for (i = 0; i < 75; i++) {              /* up to ~15 s */
+        if (sceNetApctlGetState(&state) != 0) {
+            pspDebugScreenPrintf("apctl getstate failed\n");
+            return -1;
+        }
+        if (state == PSP_NET_APCTL_STATE_GOT_IP)
+            break;
+        if (state == PSP_NET_APCTL_STATE_DISCONNECTED &&
+            i > 5) {
+            pspDebugScreenPrintf("apctl: dropped to DISCONNECTED\n");
+            return -1;
+        }
+        pspDebugScreenPrintf("  state %d %-11s\r", state,
+                             names[state < 7 ? state : 6]);
+        sceKernelDelayThread(200000);       /* 200 ms */
+    }
+    pspDebugScreenPrintf("\n");
+    if (state != PSP_NET_APCTL_STATE_GOT_IP) {
+        pspDebugScreenPrintf("wlan: no IP in %d s (state %d)\n", 15, state);
+        return -1;
+    }
+    pspDebugScreenPrintf("wlan: GOT_IP\n");
+    return 0;
 }
 
 /* ── session output: render remote bytes to the debug screen,
@@ -323,6 +412,9 @@ int main(void)
 
     if (init_net() != 0) {
         hold("net init failed");
+    }
+    if (apctl_connect() != 0) {
+        hold("wlan connect failed");
     }
     net_info();
     pspDebugScreenPrintf("------------------------\n");
