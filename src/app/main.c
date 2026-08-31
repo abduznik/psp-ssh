@@ -16,6 +16,7 @@
 #include <pspnet.h>
 #include <pspnet_inet.h>
 #include <pspnet_apctl.h>
+#include <psputility.h>
 #include <pspwlan.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -55,12 +56,62 @@ static void load_config(void)
     fclose(f);
 }
 
+/* Load the network modules the PSP ships with. Every homebrew that
+   touches the net stack must do this before sceNetInit — calling the
+   inits cold just returns errors (and then exiting with a partial
+   stack crashes the console). Mirrors pspSdkLoadInetModules()
+   (pspsdk src/sdk/inethelper.c). */
+static int load_net_modules(void)
+{
+    const struct { unsigned int type; const char *name; } mods[] = {
+        { PSP_NET_MODULE_COMMON,  "COMMON"  },
+        { PSP_NET_MODULE_INET,    "INET"    },
+        { PSP_NET_MODULE_PARSEURI, "PARSEURI" },
+        { PSP_NET_MODULE_PARSEHTTP, "PARSEHTTP" },
+        { PSP_NET_MODULE_HTTP,    "HTTP"    },
+        { PSP_NET_MODULE_SSL,     "SSL"     },
+    };
+    int i;
+    for (i = 0; i < (int)(sizeof(mods) / sizeof(mods[0])); i++) {
+        int err = sceUtilityLoadNetModule(mods[i].type);
+        if (err < 0 && err != 0x80010003) { /* 0x80010003 = already loaded */
+            pspDebugScreenPrintf("load %s: 0x%08X\n", mods[i].name, err);
+            return -1;
+        }
+    }
+    return 0;
+}
+
 static int init_net(void)
 {
-    if (sceNetInit(0x80000, 42, 0, 42, 0) != 0) return -1;
-    if (sceNetInetInit() != 0) return -1;
-    if (sceNetApctlInit(0x8000, 48) != 0) return -1;
+    int err;
+
+    if (load_net_modules() != 0) {
+        pspDebugScreenPrintf("net modules failed\n");
+        return -1;
+    }
+
+    /* SDK-standard arguments (inethelper.c: sceNetInit(0x20000, 0x20,
+       0x1000, 0x20, 0x1000) * 2x workspace for our socket buffers) */
+    err = sceNetInit(0x80000, 42, 0, 42, 0);
+    if (err != 0) { pspDebugScreenPrintf("sceNetInit: 0x%08X\n", err); return -1; }
+
+    err = sceNetInetInit();
+    if (err != 0) { pspDebugScreenPrintf("sceNetInetInit: 0x%08X\n", err); return -1; }
+
+    err = sceNetApctlInit(0x8000, 48);
+    if (err != 0) { pspDebugScreenPrintf("sceNetApctlInit: 0x%08X\n", err); return -1; }
+
     return 0;
+}
+
+/* Stall instead of returning from main with the net stack up/down —
+   exiting mid-stack is what crashed the PSP. Hold until power off. */
+static void hold(const char *msg)
+{
+    pspDebugScreenPrintf("%s\n", msg);
+    pspDebugScreenPrintf("hold (power off to exit)\n");
+    for (;;) sceKernelDelayThread(1000000);
 }
 
 static int out_print(void *ctx, const unsigned char *d, size_t n)
@@ -81,25 +132,21 @@ int main(void)
 
     load_config();
     if (!cfg_host[0]) {
-        pspDebugScreenPrintf("no config at %s\n", CONFIG);
-        return 1;
+        hold("no config at ms0:/PSP/SYSTEM/pspssh.cfg");
     }
 
     if (init_net() != 0) {
-        pspDebugScreenPrintf("net init failed\n");
-        return 1;
+        hold("net init failed");
     }
 
     memset(&t, 0, sizeof(t));
     if (sshe_net_connect(&t.sock, cfg_host, cfg_port) != 0) {
-        pspDebugScreenPrintf("connect failed\n");
-        return 1;
+        hold("connect failed");
     }
 
     if (sshe_tx_handshake(&t, "SSH-2.0-PSPSSH_0.1") != 0) {
-        pspDebugScreenPrintf("handshake failed\n");
         sshe_net_close(&t.sock);
-        return 1;
+        hold("handshake failed");
     }
     pspDebugScreenPrintf("connected: %s\n", t.server_id);
     pspDebugScreenPrintf("host key: %02x%02x%02x%02x...\n",
@@ -109,11 +156,12 @@ int main(void)
     if (sshe_client_run(&t, cfg_user, cfg_pass,
                         cfg_cmd[0] ? cfg_cmd : NULL,
                         out_print, NULL, NULL, NULL) != 0) {
-        pspDebugScreenPrintf("session failed\n");
+        hold("session failed");
     }
 
     (void)out_ign;
     sshe_net_close(&t.sock);
     pspDebugScreenPrintf("\nbye.\n");
+    hold("done");
     return 0;
 }
