@@ -11,4 +11,8 @@
 int osk_input(const char *desc, const char *initial,
               char *out, int outlen);
 
+/* After the OSK closes, point the display back at the debug screen
+ * framebuffer (the OSK's GU swap leaves it on the dialog buffer). */
+void osk_restore_debug_display(void);
+
 #endif /* PSPSSH_OSK_H */

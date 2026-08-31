@@ -206,7 +206,8 @@ static int apctl_connect(void)
         "DISCONNECTED", "SCANNING", "JOINING", "GETTING_IP",
         "GOT_IP", "EAP_AUTH", "KEY_EXCHANGE"
     };
-    int state = PSP_NET_APCTL_STATE_DISCONNECTED;
+    int last = PSP_NET_APCTL_STATE_DISCONNECTED;
+    int disconnected_ticks = 0;
     int i;
 
     if (!sceWlanDevIsPowerOn()) {
@@ -220,29 +221,35 @@ static int apctl_connect(void)
     }
 
     pspDebugScreenPrintf("wlan: connecting...\n");
-    for (i = 0; i < 75; i++) {              /* up to ~15 s */
+    for (i = 0; i < 100; i++) {             /* up to ~20 s */
+        int state;
         if (sceNetApctlGetState(&state) != 0) {
             pspDebugScreenPrintf("apctl getstate failed\n");
             return -1;
         }
-        if (state == PSP_NET_APCTL_STATE_GOT_IP)
-            break;
-        if (state == PSP_NET_APCTL_STATE_DISCONNECTED &&
-            i > 5) {
-            pspDebugScreenPrintf("apctl: dropped to DISCONNECTED\n");
-            return -1;
+        if (state == PSP_NET_APCTL_STATE_GOT_IP) {
+            pspDebugScreenPrintf("wlan: GOT_IP\n");
+            return 0;
         }
-        pspDebugScreenPrintf("  state %d %-11s\r", state,
-                             names[state < 7 ? state : 6]);
+        /* report transitions so failures are readable */
+        if (state != last) {
+            pspDebugScreenPrintf("  state %d %-11s\n", state,
+                                 names[state < 7 ? state : 6]);
+            last = state;
+        }
+        if (state == PSP_NET_APCTL_STATE_DISCONNECTED) {
+            if (++disconnected_ticks >= 25) {   /* ~5 s stuck */
+                pspDebugScreenPrintf("wlan: stuck DISCONNECTED\n");
+                pspDebugScreenPrintf("hint: is wpa2psp.prx in game.txt?\n");
+                return -1;
+            }
+        } else {
+            disconnected_ticks = 0;
+        }
         sceKernelDelayThread(200000);       /* 200 ms */
     }
-    pspDebugScreenPrintf("\n");
-    if (state != PSP_NET_APCTL_STATE_GOT_IP) {
-        pspDebugScreenPrintf("wlan: no IP in %d s (state %d)\n", 15, state);
-        return -1;
-    }
-    pspDebugScreenPrintf("wlan: GOT_IP\n");
-    return 0;
+    pspDebugScreenPrintf("wlan: no IP in 20 s (state %d)\n", last);
+    return -1;
 }
 
 /* ── session output: render remote bytes to the debug screen,
@@ -372,6 +379,7 @@ static int menu_run(void)
                 case F_CMD:  snprintf(cfg_cmd, sizeof(cfg_cmd), "%s", buf); break;
                 }
             }
+            osk_restore_debug_display();
             menu_render(sel);
         }
         if ((pad.Buttons & (PSP_CTRL_START | PSP_CTRL_TRIANGLE)) &&
@@ -395,7 +403,16 @@ int main(void)
     sshe_tx t;
     int rc;
 
+    gu_init();                   /* GE for the OSK dialog — REQUIRED */
     pspDebugScreenInit();
+    /* settle: swap once so the CPU-drawn debug buffer (VRAM base) is
+       the one being displayed — after GU init the display points at
+       the second buffer and the menu would be invisible */
+    sceGuStart(GU_DIRECT, gu_list);
+    sceGuFinish();
+    sceGuSync(GU_SYNC_FINISH, GU_SYNC_WHAT_DONE);
+    sceDisplayWaitVblankStart();
+    sceGuSwapBuffers();
     register_exit_callback();
     pspDebugScreenPrintf("PSPSSH v0.2\n");
 
@@ -411,11 +428,12 @@ int main(void)
     if (init_net() != 0) {
         hold("net init failed");
     }
+    net_info();                 /* always: show PSP's IP before connect */
+    pspDebugScreenPrintf("------------------------\n");
     if (apctl_connect() != 0) {
         hold("wlan connect failed");
     }
-    net_info();
-    pspDebugScreenPrintf("------------------------\n");
+    net_info();                 /* again after GOT_IP */
 
     memset(&t, 0, sizeof(t));
     if (sshe_net_connect(&t.sock, cfg_host, cfg_port) != 0) {

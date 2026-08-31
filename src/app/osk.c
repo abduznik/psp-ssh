@@ -129,3 +129,13 @@ int osk_input(const char *desc, const char *initial, char *out, int outlen)
     }
     return 0;
 }
+
+/* Point the display back at the debug-screen framebuffer (VRAM base).
+   The OSK's GU swap leaves the display on the dialog's buffer; without
+   this the CPU-drawn menu text is invisible after editing. */
+void osk_restore_debug_display(void)
+{
+    sceDisplaySetFrameBuf((void *)sceGeEdramGetAddr(), 512,
+                          PSP_DISPLAY_PIXEL_FORMAT_8888,
+                          PSP_DISPLAY_SETBUF_NEXTFRAME);
+}
